@@ -1,9 +1,9 @@
-# Proiect-WebTech
+# Conferencia
 
-# Proiect-WebTech: Aplicație Web pentru Organizarea Conferințelor
+# Aplicație Web pentru Organizarea Conferințelor
 
 ## Descriere
-Această aplicație web permite organizarea conferințelor științifice, facilitând înregistrarea și gestionarea articolelor științifice trimise de autori. Aplicația include funcționalități de gestionare a conferințelor, evaluarea articolelor și monitorizarea stării acestora. Este realizată ca aplicație SPA (Single Page Application) și este accesibilă pe desktop, mobil și tabletă.
+Această aplicație web permite organizarea conferințelor științifice, facilitând înregistrarea și gestionarea articolelor științifice trimise de autori. Aplicația include funcționalități de gestionare a conferințelor, evaluarea articolelor și monitorizarea stării acestora. 
 
 ## Funcționalități
 - **Utilizatori:** 
@@ -18,10 +18,10 @@ Această aplicație web permite organizarea conferințelor științifice, facili
   4. Actualizarea articolelor pe baza feedback-ului.
 
 ## Tehnologii Utilizate
-- **Frontend**: React / Vue.js / Angular
-- **Backend**: Node.js (Express) / Django / alt framework
-- **Bază de Date**: MySQL / PostgreSQL / MongoDB
-- **Autentificare**: JSON Web Tokens (JWT) / sesiuni
+- **Frontend**: React 
+- **Backend**: Node.js (Express) 
+- **Bază de Date**: MySQL-ORM
+- **Autentificare**: JSON Web Tokens
 
 ## Instalare și Configurare
 1. Clonează repository-ul:
