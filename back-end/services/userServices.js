@@ -33,4 +33,5 @@ const createUser = async ({ username, firstName, lastName, role }) => {
     }
 };
 
+
 export { getUsers, getRandomUser, search, getById, createUser };

@@ -1,7 +1,7 @@
-import { DataTypes } from 'sequelize';
-import sequelize from './config.js'; 
+import { db } from "./config.js";
+import { DataTypes } from "sequelize";
 
-const Article = sequelize.define('Article', {
+const Article = db.define('Article', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -9,40 +9,27 @@ const Article = sequelize.define('Article', {
     },
     title: {
         type: DataTypes.STRING,
-        allowNull: false, 
+        allowNull: false,
     },
-    content: {
+    description: {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    status: {
-        type: DataTypes.ENUM('pending', 'approved', 'rejected'), 
-        defaultValue: 'pending',  
+    conferenceId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     authorId: {
         type: DataTypes.INTEGER,
-        allowNull: false, 
-        references: {
-            model: 'Users',  
-            key: 'id',
-        },
+        allowNull: false,
     },
-    reviewer1Id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'Users',  
-            key: 'id',
-        },
+    status: {
+        type: DataTypes.ENUM('pending', 'approved', 'needs revision', 'rejected'),
+        defaultValue: 'pending',
     },
-    reviewer2Id: {
+    version: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'Users',  
-            key: 'id',
-        },
+        defaultValue: 1,
     },
 });
 

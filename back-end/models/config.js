@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 
 export const db = new Sequelize({
     dialect: "sqlite",
-    storage: "utilizatori.db" 
+    storage: "utilizatori.db"
 });
 
 export const synchronizeDatabase = async () => {

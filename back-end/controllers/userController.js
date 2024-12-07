@@ -48,11 +48,11 @@ const getById = async (req, res) => {
     }
 };
 
-const create = async (req, res) => {
+const createUser = async (req, res) => {
     try {
         const { username, firstName, lastName, role } = req.body;
         if (!username || !firstName || !lastName) {
-            return res.status(400).json({ message: "Username, firstName și lastName sunt necesare!" });
+            return res.status(400).json({ message: "Toate datele sunt necesare!" });
         }
         const newUser = await userService.createUser({ username, firstName, lastName, role });
         res.status(201).json({ message: "User created successfully", user: newUser });
@@ -63,11 +63,10 @@ const create = async (req, res) => {
     }
 };
 
-
 export {
     getAllUsers,
     getRandomUser,
     search,
     getById,
-    create
+    createUser
 }

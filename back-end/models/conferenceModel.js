@@ -1,24 +1,29 @@
 import { DataTypes } from 'sequelize';
-import sequelize from './config.js';
+import { db } from "./config.js"; 
 
-const Conference = sequelize.define('Conference', {
+const Conference = db.define('Conference', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    title: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: true
+    location: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     date: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    organizerId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 });
+
 
 export default Conference;

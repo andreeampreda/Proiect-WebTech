@@ -8,4 +8,4 @@ router.get("/random", userController.getRandomUser);
 router.get("/search", userController.search);
 router.get("/:id", userController.getById);
 
-router.post("/", userController.create);
+router.post("/", userController.createUser);
