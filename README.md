@@ -20,7 +20,7 @@ Această aplicație web permite organizarea conferințelor științifice, facili
 ## Tehnologii Utilizate
 - **Frontend**: React 
 - **Backend**: Node.js (Express) 
-- **Bază de Date**: MySQL-ORM
+- **Bază de Date**: SQLite
 - **Autentificare**: JSON Web Tokens
 
 ## Instalare și Configurare
