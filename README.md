@@ -26,4 +26,4 @@ Această aplicație web permite organizarea conferințelor științifice, facili
 ## Instalare și Configurare
 1. Clonează repository-ul:
    ```bash
-   git clone https://github.com/andreeamprea/Proiect-WebTech.git
+   git clone https://github.com/andreeampreda/Proiect-WebTech.git
