@@ -1,8 +1,9 @@
 import express from 'express';
 import path from 'path';
 import {router as userRouter} from './routes/userRoutes.js';
-import {router as confRouter} from './routes/ConferenceRoutes.js';
+import {router as confRouter} from './routes/conferenceRoutes.js';
 import {router as artRouter} from './routes/articolRoutes.js';
+import {router as revRouter} from './routes/reviewRoutes.js'
 import { synchronizeDatabase } from './models/config.js';
 
 const PORT = 8080;
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 app.use("/user",userRouter);
 app.use("/conference",confRouter);
 app.use("/article",artRouter);
+app.use("/review",revRouter);
 
 const startServer = async () => {
     try {

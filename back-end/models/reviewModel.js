@@ -1,7 +1,7 @@
 import { db } from "./config.js";
 import { DataTypes } from "sequelize";
 
-//de terminat!
+
 const Review = db.define('Review', {
     id: {
         type: DataTypes.INTEGER,
