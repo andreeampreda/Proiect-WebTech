@@ -9,3 +9,6 @@ router.get("/search", userController.search);
 router.get("/:id", userController.getById);
 
 router.post("/", userController.createUser);
+
+router.put("/:id", userController.updateUser);
+router.delete("/:id", userController.deleteUser);

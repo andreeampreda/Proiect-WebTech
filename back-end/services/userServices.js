@@ -33,5 +33,29 @@ const createUser = async ({ username, firstName, lastName, role }) => {
     }
 };
 
+const updateUser = async(userId, updatedData) =>{
+    const updatedUser = await User.update(updatedData, {
+        where:{id: userId},
+        returning: true,
+        plain: true
+    });
 
-export { getUsers, getRandomUser, search, getById, createUser };
+    return updatedUser[1];
+}
+
+const deleteUser = async(userId) => {
+    const deletedCount = await User.destroy({
+        where: {id: userId}
+    });
+    return deletedCount > 0;
+}
+
+
+export { 
+    getUsers, 
+    getRandomUser, 
+    search, 
+    getById, 
+    createUser, 
+    updateUser, 
+    deleteUser };

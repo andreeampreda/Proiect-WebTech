@@ -63,10 +63,53 @@ const createUser = async (req, res) => {
     }
 };
 
+const updateUser = async(req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    if (!id || !updatedData) {
+        return res.status(400)
+        .send({ message: "ID-ul și datele actualizate sunt necesare" });
+    }
+
+    const updatedUser = await userService.updateUser(id, updatedData);
+    if(updatedUser){
+        res.send({ message: "User actualizat cu succes", user: updatedUser });
+    } else {
+        res.status(404).send({ message: "User-ul nu a fost găsit" });
+    }
+
+  } catch (error) {
+    res.status(500).send({ message: "Eroare la actualizarea user-ului", error: error.message });
+  }  
+};
+
+const deleteUser = async(req, res) =>{
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).send({ message: "ID-ul este necesar" });
+        }
+
+        const isDeleted = await userService.deleteUser(id);
+        if (isDeleted) {
+            res.send({ message: "User șters cu succes" });
+        } else {
+            res.status(404).send({ message: "User-ul nu a fost găsit" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Eroare la ștergerea user-ului", error: error.message });
+    }
+};
+
 export {
     getAllUsers,
     getRandomUser,
     search,
     getById,
-    createUser
+    createUser,
+    updateUser,
+    deleteUser
 }
