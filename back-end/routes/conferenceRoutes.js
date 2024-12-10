@@ -8,4 +8,7 @@ router.get('/search',confController.search);
 
 router.post("/",confController.createConference);
 
+router.put('/:id', confController.updateConference);
+router.delete('/:id', confController.deleteConference);
+
 

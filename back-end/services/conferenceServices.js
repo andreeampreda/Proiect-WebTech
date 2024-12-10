@@ -35,8 +35,27 @@ const createConference= async({name,location,date,organizerId})=>{
     }
 }
 
+const updateConference= async (conferenceId, updatedData) => {
+    const updatedConference= await Conference.update(updatedData, {
+        where: { id: conferenceId },
+        returning: true,
+        plain: true
+    });
+    
+    return updatedConference[1]; 
+}
+
+const deleteConference= async (conferenceId) => {
+    const deletedCount = await Conference.destroy({
+        where: { id: conferenceId }
+    });
+    return deletedCount > 0;
+}
+
 export {
     getConferences,
     search,
-    createConference
+    createConference,
+    updateConference,
+    deleteConference
 };

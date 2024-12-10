@@ -39,8 +39,50 @@ const createConference= async(req,res)=>{
     }
 };
 
+const updateConference = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedData = req.body;
+
+        if (!id || !updatedData) {
+            return res.status(400)
+            .send({ message: "ID-ul și datele actualizate sunt necesare" });
+        }
+
+        const updatedConference = await confService.updateConference(id, updatedData);
+        if (updatedConference) {
+            res.send({ message: "Conferinta actualizata cu succes", conference: updatedConference});
+        } else {
+            res.status(404).send({ message: "Conferinta nu a fost găsit" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Eroare la actualizarea conferintei", error: error.message });
+    }
+};
+
+const deleteConference= async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).send({ message: "ID-ul este necesar" });
+        }
+
+        const isDeleted = await confService.deleteConference(id);
+        if (isDeleted) {
+            res.send({ message: "Conferinta ștearsa cu succes" });
+        } else {
+            res.status(404).send({ message: "Conferinta nu a fost găsita" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Eroare la ștergerea conferintei", error: error.message });
+    }
+};
+
 export { 
     getAllConferences,
     search,
-    createConference 
+    createConference,
+    updateConference, 
+    deleteConference
 };
