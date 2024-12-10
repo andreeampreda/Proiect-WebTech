@@ -24,8 +24,28 @@ const createArticle= async({title,description,conferenceId,authorId,status,versi
     }
 }
 
+const updateArticle= async (articleId, updatedData) => {
+    const updatedArticle = await Article.update(updatedData, {
+        where: { id: articleId },
+        returning: true,
+        plain: true
+    });
+    
+    return updatedArticle[1]; 
+}
+
+const deleteArticle= async (articleId) => {
+    const deletedCount = await Article.destroy({
+        where: { id: articleId }
+    });
+    return deletedCount > 0;
+}
+
+
 export {
     getArticles,
     search,
-    createArticle
+    createArticle, 
+    updateArticle,
+    deleteArticle
 };

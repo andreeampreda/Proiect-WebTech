@@ -38,8 +38,49 @@ const createArticle=(req,res)=>{
     }
 };
 
+const updateArticle = async (req, res) => {
+    try {
+        const { id } = req.params;  
+        const updatedData = req.body;  
+        if (!id || !updatedData) {
+            return res.status(400).send({ message: "ID-ul și datele actualizate sunt necesare" });
+        }
+    
+        const updatedArticle = await articleService.updateArticle(id, updatedData);
+        
+        if (updatedArticle) {
+            res.send({ message: "Articol actualizat cu succes", article: updatedArticle });
+        } else {
+            res.status(404).send({ message: "Articolul nu a fost găsit" });
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Eroare la actualizarea articolului", error: error.message });
+    }
+};
+
+const deleteArticle = async (req, res) => {
+    try {
+        const { id } = req.params;  
+        if (!id) {
+            return res.status(400).send({ message: "ID-ul articolului este necesar" });
+        }
+  
+        const isDeleted = await articleService.deleteArticle(id);
+      
+        if (isDeleted) {
+            res.send({ message: "Articol șters cu succes" });
+        } else {
+            res.status(404).send({ message: "Articolul nu a fost găsit" });
+        }
+    } catch (error) {
+      res.status(500).send({ message: "Eroare la ștergerea articolului", error: error.message });
+    }
+};
+
 export {
     getArticles,
     search,
-    createArticle
+    createArticle,
+    updateArticle,
+    deleteArticle
 };
