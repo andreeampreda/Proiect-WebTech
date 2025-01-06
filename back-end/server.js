@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 import {router as userRouter} from './routes/userRoutes.js';
 import {router as confRouter} from './routes/conferenceRoutes.js';
 import {router as artRouter} from './routes/articolRoutes.js';
@@ -16,12 +17,13 @@ app.use(express.json());
 // })
 
 // app.use("/", userRouter);
-app.use(express.static(path.join(process.cwd(), 'public')));
+// app.use(express.static(path.join(process.cwd(), 'public')));
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
-  });
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(process.cwd(), 'public', 'login.html'));
+//   });
 
+app.use(cors());
 
 app.use("/user",userRouter);
 app.use("/conference",confRouter);

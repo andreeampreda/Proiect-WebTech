@@ -1,4 +1,6 @@
 import * as userService from "../services/userServices.js";
+import bcrypt from "bcrypt";
+
 
 const users=['daria2110','pichi18','andreiutzatha03']
 
@@ -50,11 +52,13 @@ const getById = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
-        const { username, firstName, lastName, role } = req.body;
+        const { username, firstName, lastName, password } = req.body;
+        const role = req.body.role || 'author';
+       
         if (!username || !firstName || !lastName) {
             return res.status(400).json({ message: "Toate datele sunt necesare!" });
         }
-        const newUser = await userService.createUser({ username, firstName, lastName, role });
+        const newUser = await userService.createUser({ username, firstName, lastName, role, password });
         res.status(201).json({ message: "User created successfully", user: newUser });
 
     } catch (error) {
@@ -104,6 +108,27 @@ const deleteUser = async(req, res) =>{
     }
 };
 
+const loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await userService.search(username);
+
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send({ message: "Invalid password" });
+        }
+
+        res.send({ message: "Login successful!" });
+        
+    } catch (error) {
+        res.status(500).send({ message: "Error logging in", error: error.message });
+    }
+};
+
 export {
     getAllUsers,
     getRandomUser,
@@ -111,5 +136,6 @@ export {
     getById,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser
 }

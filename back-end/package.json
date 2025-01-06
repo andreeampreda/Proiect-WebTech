@@ -19,6 +19,8 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "sequelize-cli": "^6.6.2"
   }
 }
