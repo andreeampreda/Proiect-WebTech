@@ -1,0 +1,46 @@
+.main-page {
+    background-image: url('/public/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;  
+}
+
+.content-main {
+    padding: 100px; 
+    max-width: 700px;
+}
+.btn.signup{
+    display: inline-block;
+    text-decoration: none;
+    padding: 14px 40px;
+    color: #fff;
+    background-image: linear-gradient(120deg, #04155f, #d5c836);
+    font-size:20px;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    transition: 0.5s;
+}
+
+.btn.signup:hover{
+   border-top-right-radius: 30px;
+}
+
+.content-main h1{
+    font-size:60px;
+    color:#222;
+}
+
+.content-main p{
+    margin: 10px 0 30px;
+    color:#333; 
+    animation-delay: 0.5s;
+}
+
+.image{
+    height: 500px;
+    width:560px;
+    position: absolute;
+    bottom: 0;
+    right: 5%;
+}

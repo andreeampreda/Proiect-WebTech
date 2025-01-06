@@ -1,0 +1,35 @@
+.about-page {
+    background-image: url('/public/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;  
+}
+
+.content-about h1 h2{
+    color:#222222;
+    text-align: center;
+}
+
+.content-about{
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-about h1{
+    font-size: 50px;
+}
+
+.content-about h1,h2{
+    width: 200%;
+    text-align: center;
+}
+
+.content-about p{
+    font-size: 20px;
+    margin: 10px 0 30px;
+    text-align: center;
+}
