@@ -18,12 +18,13 @@ const getById = async (id) => {
     return await User.findByPk(id); 
 };
 
-const createUser = async ({ username, firstName, lastName, role }) => {
+const createUser = async ({ username, firstName, lastName, role,password }) => {
     try {
         const newUser = await User.create({
             username,
             firstName,
             lastName,
+            password,
             role 
         });
 

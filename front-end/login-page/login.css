@@ -3,7 +3,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins",sans-serif;
-
 }
 
 body{
@@ -12,7 +11,7 @@ body{
     align-items: center;
     align-items: center;
     min-height: 100vh;
-    background: url("media/background.png") no-repeat;
+    background: url("media/background.jpg") no-repeat;
     background-size: cover;
     background-position: center;
 }
@@ -21,16 +20,16 @@ body{
     width: 420px;
     background-color: transparent;
     border: 2px solid rgba(255,255,255,.2);
-    backdrop-filter: blur(7px);
+    backdrop-filter: blur(20px);
     color: rgb(255, 255, 255);   
     border-radius: 12px;
     padding: 30px 40px;
 }
 
 .wrapper h1{
-    font-size: 36px;
+    font-size: 46px;
     text-align: center;
-    color:rgb(161, 157, 164);
+    color:rgb(217, 103, 92);
 }
 
 .wrapper .input-box{
@@ -46,7 +45,7 @@ body{
     background: transparent;
     border: none;
     outline: none;
-    border:2px solid rgba(255,255,255,.2);
+    border:2px solid rgba(255,255,255,.3);
     border-radius: 40px;
     font-size: 16px;
     color: white;
@@ -115,4 +114,10 @@ body{
 
 .register-link a:hover{
     text-decoration: underline;
+}
+
+.incorrect{
+    border:2px solid rgb(240, 69, 69);
+    border-radius: 40px;
+    color: rgb(240, 69, 69);
 }
