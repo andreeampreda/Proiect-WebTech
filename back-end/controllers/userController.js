@@ -13,6 +13,15 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+const getAllAuthors = async (req, res) => {
+    try {
+        const users = await userService.getAuthors();
+        res.send({ users });
+    } catch (error) {
+        res.status(500).send({ message: "Error fetching users", error: error.message });
+    }
+};
+
 const getRandomUser = async (req, res) => {
     try {
         const user = await userService.getRandomUser();
@@ -122,8 +131,15 @@ const loginUser = async (req, res) => {
             return res.status(401).send({ message: "Invalid password" });
         }
 
-        res.send({ message: "Login successful!" });
-        
+        res.send({ 
+            message: "Login successful!", 
+            user: {
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role
+            }
+        });
     } catch (error) {
         res.status(500).send({ message: "Error logging in", error: error.message });
     }
@@ -137,5 +153,6 @@ export {
     createUser,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    getAllAuthors
 }

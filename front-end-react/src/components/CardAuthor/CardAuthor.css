@@ -1,0 +1,22 @@
+.author-card{
+    background-color: rgb(220, 181, 65);
+    margin:20px;
+    padding: 20px;
+    border: 1px solid #000;
+    border-radius: 20px;
+}
+
+.author-up{
+    display: flex;
+    flex-direction: row;
+    gap:10px;
+}
+.author-up i{
+    font-size: 40px;
+    color: #071a44;
+}
+
+.author-up h2{
+    font-size: 40px;
+    color: #071a44;
+}

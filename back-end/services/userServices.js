@@ -4,6 +4,14 @@ const getUsers = async () => {
     return await User.findAll();
 };
 
+const getAuthors = async () => {
+    return await User.findAll({
+        where: {
+            role: 'author'
+        }
+    });
+};
+
 const getRandomUser = async () => {
     const users = await User.findAll();
     const randomIndex = Math.floor(Math.random() * users.length);
@@ -59,4 +67,5 @@ export {
     getById, 
     createUser, 
     updateUser, 
-    deleteUser };
+    deleteUser,
+    getAuthors};

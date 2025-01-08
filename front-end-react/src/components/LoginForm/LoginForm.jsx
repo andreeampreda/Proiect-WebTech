@@ -25,9 +25,14 @@ function LoginForm() {
       });
 
       if (response.ok) {
-        const message = await response.text();
+        const message = await response.json();
         alert("Login successful!");
-        console.log("hahaa");
+        console.log(message);
+        localStorage.setItem("user", message.user.username);
+        localStorage.setItem("firstName", message.user.firstName);
+        localStorage.setItem("lastName", message.user.lastName);
+        localStorage.setItem("role", message.user.role);
+
         navigate("/home");
       } else {
         alert("Login failed!");

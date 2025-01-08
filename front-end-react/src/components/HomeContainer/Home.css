@@ -1,0 +1,32 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.home-container h1 {
+    padding: 10px;
+}
+
+.home-content {
+    padding: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.home-img {
+    height: 450px;
+    width: 450px;
+    /* position: absolute; */
+    bottom: 0;
+}
+
+.conferences-container {
+    background-color: #eca1a1;
+    width: 990px;
+    height: 500px;
+    border: 20px rgb(218, 137, 23);
+    border-radius: 30px;
+}

@@ -4,6 +4,7 @@ import * as userController from "../controllers/userController.js";
 export const router = express.Router();
 
 router.get("/", userController.getAllUsers);
+router.get("/authors", userController.getAllAuthors);
 router.get("/random", userController.getRandomUser);
 router.get("/search", userController.search);
 router.get("/:id", userController.getById);
