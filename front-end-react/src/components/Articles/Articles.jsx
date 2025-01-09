@@ -23,7 +23,7 @@ function Articles() {
       <div className="article title">
         <span>Articles</span>
         {userRole === "author" && (
-          <button className="btn btn-primary">Add Article</button>
+          <button className="btn add-btn">Add Article</button>
         )}
       </div>
       <div className="article-container">

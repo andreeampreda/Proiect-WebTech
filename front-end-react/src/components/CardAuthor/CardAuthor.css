@@ -4,19 +4,61 @@
     padding: 20px;
     border: 1px solid #000;
     border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
 }
 
-.author-up{
+.author-card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+
+.user-content{
     display: flex;
     flex-direction: row;
-    gap:10px;
+    align-items: flex-start;
+    gap:20px;
 }
-.author-up i{
-    font-size: 40px;
+
+.user-content i{
+    margin: 0;
+    padding: 0;
+    font-size: 80px;
     color: #071a44;
 }
 
-.author-up h2{
-    font-size: 40px;
+.user-info{
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
     color: #071a44;
+    display: block;
+}
+
+.user-info span{
+    font-size: 30px;
+    
+}
+
+.user-info #username{
+    font-weight:bold;
+}
+
+.ud-buttons{
+    margin-left:auto;
+    align-self:baseline;
+}
+
+.ud-buttons .btn{
+    margin-right: 10px;
+    color: rgb(40, 39, 39);
+    border:1px solid rgb(40, 39, 39);
+    background:linear-gradient(50deg, rgb(215, 201, 159),rgb(96, 149, 172));
+    box-shadow: #000;
+}
+
+.ud-buttons .btn:hover{
+    color: rgb(255, 255, 255);
+    border:1px solid rgb(255, 254, 254); 
+    background:linear-gradient(50deg,rgb(96, 149, 172),rgb(215, 201, 159));
+    transition: 0.5s;
 }

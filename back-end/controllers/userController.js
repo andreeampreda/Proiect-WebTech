@@ -22,6 +22,25 @@ const getAllAuthors = async (req, res) => {
     }
 };
 
+const getAllOrganizers= async (req, res) => {
+    try {
+        const users = await userService.getOrganizers();
+        res.send({ users });
+    } catch (error) {
+        res.status(500).send({ message: "Error fetching users", error: error.message });
+    }
+};
+
+
+const getAllReviewers= async (req, res) => {
+    try {
+        const users = await userService.getReviewers();
+        res.send({ users });
+    } catch (error) {
+        res.status(500).send({ message: "Error fetching users", error: error.message });
+    }
+};
+
 const getRandomUser = async (req, res) => {
     try {
         const user = await userService.getRandomUser();
@@ -154,5 +173,7 @@ export {
     updateUser,
     deleteUser,
     loginUser,
-    getAllAuthors
+    getAllAuthors,
+    getAllOrganizers,
+    getAllReviewers
 }

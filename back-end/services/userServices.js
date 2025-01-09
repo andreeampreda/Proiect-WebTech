@@ -12,6 +12,22 @@ const getAuthors = async () => {
     });
 };
 
+const getOrganizers = async () => {
+    return await User.findAll({
+        where: {
+            role: 'organizer'
+        }
+    });
+};
+
+const getReviewers = async () => {
+    return await User.findAll({
+        where: {
+            role: 'reviewer'
+        }
+    });
+};
+
 const getRandomUser = async () => {
     const users = await User.findAll();
     const randomIndex = Math.floor(Math.random() * users.length);
@@ -68,4 +84,7 @@ export {
     createUser, 
     updateUser, 
     deleteUser,
-    getAuthors};
+    getAuthors,
+    getOrganizers,
+    getReviewers
+};

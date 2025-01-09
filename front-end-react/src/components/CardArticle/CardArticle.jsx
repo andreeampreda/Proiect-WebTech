@@ -1,16 +1,20 @@
 import React from "react";
 import "./CardArticle.css";
 
-function CardArticle({ title, description, id, status }) {
+function CardArticle({ title, description, author }) {
+  const imageUrl = "/images/cards";
+
+  const number = Math.floor(Math.random() * 9) + 1;
+
   return (
-    <div className="author-card">
-      <div className="author-up">
-        <i className="fas fa-user-circle"></i>
-        <h2>{title}</h2>
-        <h2>{description}</h2>
+    <div className="article-card">
+      <div className="article-image">
+        <img src={`/images/cards/${number}.jpg`} alt={title} />
       </div>
-      <div className="author-info">
-        <p>Author Bio</p>
+      <div className="article-content">
+        <span className="article-title">{title}</span>
+        <p className="article-author">By {author}</p>
+        <p className="article-description">{description}</p>
       </div>
     </div>
   );
