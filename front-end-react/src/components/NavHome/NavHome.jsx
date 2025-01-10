@@ -18,13 +18,8 @@ function NavHome() {
           </div>
           <ul className="nav-menu active">
             <li className="nav-item">
-              <Link to="authors" className="navhome-links">
-                Authors
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="authors" className="navhome-links">
-                Reviewers
+              <Link to="creators" className="navhome-links">
+                Creators
               </Link>
             </li>
             <li>
