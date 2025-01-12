@@ -118,7 +118,7 @@ function SignUpForm() {
         <button className="btn">Sign Up</button>
         <div className="login-link">
           <p>
-            Already have an account? <a href="#" onClick={() => navigate("/login")}>Login</a>
+            Already have an account? <a href="#" onClick={() => {Navigate("/login"); window.location.reload(); }}>Login</a>
           </p>
         </div>
       </form>

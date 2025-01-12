@@ -84,7 +84,7 @@ function LoginForm() {
         <div className="register-link">
           <p>
             Don't have an account?
-            <a href="#" id="signup-btn" onClick={() => navigate("/signup")}>
+            <a href="#" id="signup-btn" onClick={() => {navigate("/signup"); window.location.reload(); }}>
               {" "}
               Register
             </a>
