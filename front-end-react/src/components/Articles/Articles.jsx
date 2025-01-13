@@ -9,15 +9,27 @@ function Articles() {
   const [articles, setArticles] = useState([]);
   const [userRole, setUserRole] = useState("");
   const [conferences, setConferences] = useState([]);
-  const [selectedConference, setSelectedConference] = useState("");
+  const [selectedConference, setSelectedConference] = useState(null);
+
+  const handleConferenceChange = (e) => {
+    const conferenceId = e.target.value;
+    setSelectedConference(e.target.value); 
+  };
 
   useEffect(() => {
     // fetch articles
-    fetch(`${SERVER_URL}`)
-      .then((response) => response.json())
-      .then((data) => setArticles(data.articles))
-      .catch((error) => console.error("Error fetching articles:", error));
+    if (selectedConference) {
+      fetch(`${SERVER_URL}/search/${selectedConference}`)
+        .then((response) => response.json())
+        .then((data) => setArticles(data.articles))
+        .catch((error) =>
+          console.error("Error fetching articles for the conference:", error)
+        );
+    }
+  }, [selectedConference]);
 
+  useEffect(() => {
+    
     // fetch user role  
     const role = localStorage.getItem("role");
     setUserRole(role);
@@ -29,25 +41,25 @@ function Articles() {
         .then((response) => response.json())
         .then((data) => setConferences(data.conferences))
         .catch((error) => console.error("Error fetching conferences:", error));
+    } else {
+      console.error("Organizer Id is missing in the localStorage");
     }
 
-    const handleConferenceChange = (e) => {
-      setSelectedConference(e.target.value); 
-    };
+    
 
   }, []);
 
   return (
     <>
       <div className="article title">
-        <span>Articles</span>
+        <span>Articles of the </span>
         {userRole === "author" && (
           <button className="btn add-btn">Add Article</button>
         )}
         {userRole === "organizer" && (
-          <div className="authors title">
+          <div className="conference title">
             <span>Conference: </span>
-            <select className="dropDown" value={selectedConference} onChange={handleConferenceChange}>
+            <select className="dropDown" value={selectedConference || ""} onChange={handleConferenceChange}>
             {conferences.length > 0 ? (
                 conferences.map((conference) => (
                   <option key={conference.id} value={conference.id}>
@@ -63,14 +75,19 @@ function Articles() {
       </div>
       <div className="article-container">
         <div className="article-list">
-          {articles.map((article) => (
+        {articles.length > 0 ? (
+          articles.map((article) => (
             <CardArticle
+              key={article.id}
               id={article.id}
               title={article.title}
               description={article.description}
               status={article.status}
             />
-          ))}
+          ))
+        ) : (
+          <p>No articles available for this conference.</p>
+        )}
         </div>
       </div>
     </>

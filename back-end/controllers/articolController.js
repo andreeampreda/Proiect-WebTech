@@ -9,12 +9,14 @@ const getArticles= async (req,res)=>{
     }
 };
 
-const search=async(req,res)=>{
+const searchByConference=async(req,res)=>{
     try{
-        const identifiedArt=await articleService.search(req.query.conferenceId);
+        const {id} = req.params;
+        const identifiedArt=await articleService.searchByConference(id);
 
-        if(identifiedArt)
-            res.send({identifiedArt});
+        if (identifiedArt && identifiedArt.length > 0) {
+            res.send({ articles: identifiedArt });
+        }
         else
             res.status(400).send("0 articles found :(");
     }       
@@ -79,7 +81,7 @@ const deleteArticle = async (req, res) => {
 
 export {
     getArticles,
-    search,
+    searchByConference,
     createArticle,
     updateArticle,
     deleteArticle

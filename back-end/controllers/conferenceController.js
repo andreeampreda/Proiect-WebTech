@@ -81,7 +81,7 @@ const deleteConference= async (req, res) => {
 
 const getConferencesByOrganizer = async (req, res) => {
     try {
-        const { organizerId } = req.params;  
+        const { organizerId } = req.params;
 
         if (!organizerId) {
             return res.status(400).send({ message: "Organizer ID is required" });
@@ -89,13 +89,17 @@ const getConferencesByOrganizer = async (req, res) => {
 
         const conferences = await confService.getConferencesByOrganizerId(organizerId);
 
-        if (conferences.length > 0) {
-            res.send({ conferences });
+        if (conferences && conferences.length > 0) {
+            res.status(200).send({ conferences });
         } else {
             res.status(404).send({ message: "No conferences found for this organizer" });
         }
     } catch (error) {
-        res.status(500).send({ message: "Error fetching conferences by organizer", error: error.message });
+        console.error("Error fetching conferences:", error); 
+        res.status(500).send({
+            message: "Error fetching conferences by organizer",
+            error: error.message 
+        });
     }
 };
 

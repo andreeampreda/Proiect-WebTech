@@ -4,7 +4,7 @@ const getArticles= async()=>{
     return await Article.findAll();
 };
 
-const search=async( conferenceId)=>{
+const searchByConference=async(conferenceId)=>{
     return await Article.findAll({where : { conferenceId }});
 };
 
@@ -44,7 +44,7 @@ const deleteArticle= async (articleId) => {
 
 export {
     getArticles,
-    search,
+    searchByConference,
     createArticle, 
     updateArticle,
     deleteArticle
