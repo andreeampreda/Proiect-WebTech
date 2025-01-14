@@ -85,13 +85,13 @@ function Articles() {
 
   return (
     <>
-      <div className="article title">
+      <div className="article-title">
         <span>Articles of the </span>
         {userRole === "author" && (
           <button className="btn add-btn">Add Article</button>
         )}
         {userRole === "organizer" && (
-          <div className="conference title">
+          <div className="conference-title">
             <span>Conference: </span>
             <select className="dropDown" value={selectedConference || ""} onChange={handleConferenceChange}>
             {conferences.length > 0 ? (
