@@ -4,28 +4,63 @@ import CardArticle from "../CardArticle/CardArticle";
 
 function Articles() {
   const SERVER_URL = "http://localhost:8080/article";
-  const CONFERENCES_URL = "http://localhost:8080/conferences/organizer";
+
+  const CONFERENCES_URL = "http://localhost:8080/conference";
 
   const [articles, setArticles] = useState([]);
   const [userRole, setUserRole] = useState("");
   const [conferences, setConferences] = useState([]);
+  const [conferenceId, setConferenceId] = useState("");
+
   const [selectedConference, setSelectedConference] = useState(null);
 
   const handleConferenceChange = (e) => {
-    const conferenceId = e.target.value;
-    setSelectedConference(e.target.value); 
+    const confId = e.target.value;
+    setSelectedConference(confId);
+    setConferenceId(confId); 
+
+    if(conferenceId){
+      fetch(`${SERVER_URL}/search/${conferenceId}`)
+        .then((response) => response.json())
+        .then((data) => setArticles(data.identifiedArt))
+        .catch((error) =>
+          console.error("Error fetching articles for the conference:", error),
+          setArticles([])
+      );
+    }
+
   };
 
   useEffect(() => {
     // fetch articles
-    if (selectedConference) {
-      fetch(`${SERVER_URL}/search/${selectedConference}`)
-        .then((response) => response.json())
-        .then((data) => setArticles(data.articles))
-        .catch((error) =>
-          console.error("Error fetching articles for the conference:", error)
-        );
+    // if (selectedConference) {
+    //   fetch(`${CONFERENCES_URL}/${selectedConference}`)
+    //     .then((response) => response.json())
+    //     .then((data) => setArticles(data.articles))
+    //     .catch((error) =>
+    //       console.error("Error fetching articles for the conference:", error)
+    //     );
+    // }
+    if (conferenceId) {
+      setArticles([]); // Resetează articolele imediat ce conferința se schimbă
+    
+      fetch(`${SERVER_URL}/search/${conferenceId}`)
+        .then((response) => {
+          if (!response.ok) {
+            setArticles([]); 
+            throw new Error(`Failed to fetch articles: ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setArticles(data.identifiedArt && data.identifiedArt.length > 0 ? data.identifiedArt : []);
+        })
+        .catch((error) => {
+          console.error("Error fetching articles for the conference:", error);
+          setArticles([]); 
+        });
     }
+    
   }, [selectedConference]);
 
   useEffect(() => {
@@ -37,27 +72,26 @@ function Articles() {
     // if the user is an organizer, fetch the conferences
     if(role === "organizer"){
       const organizerId = localStorage.getItem("userId");
-      fetch(`${CONFERENCES_URL}/${organizerId}`)  
+      if (organizerId !== null){
+      fetch(`${CONFERENCES_URL}/organizer/${organizerId}`)  
         .then((response) => response.json())
         .then((data) => setConferences(data.conferences))
         .catch((error) => console.error("Error fetching conferences:", error));
+      }
     } else {
       console.error("Organizer Id is missing in the localStorage");
     }
-
-    
-
   }, []);
 
   return (
     <>
-      <div className="article title">
+      <div className="article-title">
         <span>Articles of the </span>
         {userRole === "author" && (
           <button className="btn add-btn">Add Article</button>
         )}
         {userRole === "organizer" && (
-          <div className="conference title">
+          <div className="conference-title">
             <span>Conference: </span>
             <select className="dropDown" value={selectedConference || ""} onChange={handleConferenceChange}>
             {conferences.length > 0 ? (

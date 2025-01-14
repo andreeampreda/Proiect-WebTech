@@ -11,11 +11,12 @@ const getArticles= async (req,res)=>{
 
 const searchByConference=async(req,res)=>{
     try{
-        const {id} = req.params;
-        const identifiedArt=await articleService.searchByConference(id);
+        const { conferenceId } = req.params;
+        
+        const identifiedArt=await articleService.searchByConference(conferenceId);
 
         if (identifiedArt && identifiedArt.length > 0) {
-            res.send({ articles: identifiedArt });
+            res.send({ identifiedArt });
         }
         else
             res.status(400).send("0 articles found :(");

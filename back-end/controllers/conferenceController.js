@@ -9,6 +9,21 @@ const getAllConferences = async (req, res) => {
     }
 };
 
+const getConferencesByNameHandler = async (req, res) => {
+    try {
+        const confName = req.params.name;
+        console.log("Request received for conference:", confName); 
+        const conferences = await confService.getConferencesByName(confName);
+        if (conferences.length === 0) {
+            return res.status(404).send({ message: "No conferences found with that name" });
+        }
+        res.send(conferences);
+    } catch (error) {
+        res.status(500).send({ message: "Error retrieving conferences", error: error.message });
+    }
+};
+
+
 const search = async (req,res)=>{
     try{
         const identifiedConf = await confService.search(req.query.name);
@@ -109,5 +124,6 @@ export {
     getConferencesByOrganizer,
     createConference,
     updateConference, 
-    deleteConference
+    deleteConference,
+    getConferencesByNameHandler
 };
