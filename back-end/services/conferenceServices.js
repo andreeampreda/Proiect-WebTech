@@ -29,6 +29,14 @@ const getConferencesByOrganizerId = async (organizerId) => {
     });
 };
 
+const getConferencesByName= async (confName) => {
+    return await Conference.findAll({
+        where: {
+            name: confName
+        }
+    });
+};
+
 const createConference= async({name,location,date,organizerId})=>{
     try{
         const newConference= await Conference.create({
@@ -66,5 +74,6 @@ export {
     createConference,
     updateConference,
     deleteConference,
-    getConferencesByOrganizerId
+    getConferencesByOrganizerId,
+    getConferencesByName
 };

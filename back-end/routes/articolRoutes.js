@@ -4,8 +4,7 @@ import express from 'express'
 export const router=express.Router();
 
 router.get("/",artController.getArticles);
-router.get("/search/:conferenceId",artController.searchByConference);
-
+router.get('/search/:conferenceId', artController.searchByConference);
 router.post("/",artController.createArticle);
 
 router.put("/:id", artController.updateArticle);
