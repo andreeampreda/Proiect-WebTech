@@ -8,7 +8,7 @@ function CardNotify({ title, description,}) {
     <div className="notify-card">
       <div className="notify-content">
         <span className="notify-title">{title}</span>
-        <p className="article-description">{description}</p>
+        <p className="notify-description">{description}</p>
         
       </div>
     </div>
