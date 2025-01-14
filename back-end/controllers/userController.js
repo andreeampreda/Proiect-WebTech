@@ -149,10 +149,12 @@ const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(401).send({ message: "Invalid password" });
         }
+        console.log("User object:", user);
 
         res.send({ 
             message: "Login successful!", 
             user: {
+                id: user.id,
                 username: user.username,
                 firstName: user.firstName,
                 lastName: user.lastName,

@@ -26,8 +26,9 @@ function LoginForm() {
 
       if (response.ok) {
         const message = await response.json();
+
         alert("Login successful!");
-        console.log(message);
+        localStorage.setItem("userId", message.user.id);
         localStorage.setItem("user", message.user.username);
         localStorage.setItem("firstName", message.user.firstName);
         localStorage.setItem("lastName", message.user.lastName);

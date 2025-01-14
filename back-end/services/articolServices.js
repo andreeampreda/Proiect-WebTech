@@ -5,7 +5,11 @@ const getArticles= async()=>{
 };
 
 const searchByConference=async(conferenceId)=>{
-    return await Article.findAll({where : { conferenceId }});
+    return await Article.findAll({
+        where : { 
+            conferenceId : conferenceId 
+        }
+    });
 };
 
 const createArticle= async({title,description,conferenceId,authorId,status,version})=>{
