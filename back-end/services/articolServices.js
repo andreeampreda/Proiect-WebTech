@@ -20,11 +20,12 @@ const searchByAuthor=async(authorId)=>{
     });
 };
 
-const createArticle= async({title,description,conferenceId,authorId,status,version})=>{
+const createArticle= async({title,description,content, conferenceId,authorId,status,version})=>{
     try{
         const newArticle= await Article.create({
             title,
             description,
+            content,
             conferenceId,
             authorId,
             status,

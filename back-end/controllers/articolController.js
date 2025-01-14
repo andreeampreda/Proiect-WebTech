@@ -44,12 +44,12 @@ const searchByAuthor=async(req,res)=>{
 
 const createArticle=(req,res)=>{
     try{
-        const {title,description,conferenceId,authorId,status,version}=req.body;
+        const {title,description, content, conferenceId,authorId,status,version}=req.body;
         if(!title || !conferenceId || !authorId){
             return res.status(400).send(" Titlul, conferinta si autorul sunt necesare!");
         }
 
-        const newArticle=articleService.createArticle({title,description,conferenceId,authorId,status,version});
+        const newArticle=articleService.createArticle({title,description, content, conferenceId,authorId,status,version});
         res.status(201).send("Articolul s-a creat cu succes!");
     }catch(error){
         res.status(500).send("Error creating article");

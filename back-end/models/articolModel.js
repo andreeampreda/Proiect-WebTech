@@ -15,6 +15,10 @@ const Article = db.define('Article', {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    content: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
     conferenceId: {
         type: DataTypes.INTEGER,
         allowNull: false,
