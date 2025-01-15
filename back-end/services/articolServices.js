@@ -20,6 +20,14 @@ const searchByAuthor=async(authorId)=>{
     });
 };
 
+const getById=async(articleId)=>{
+    return await Article.findOne({
+        where : { 
+            id : articleId
+        }
+    });
+};
+
 const createArticle= async({title,description,content, conferenceId,authorId,status,version})=>{
     try{
         const newArticle= await Article.create({
@@ -57,6 +65,7 @@ const deleteArticle= async (articleId) => {
 
 export {
     getArticles,
+    getById,
     searchByConference,
     searchByAuthor,
     createArticle, 

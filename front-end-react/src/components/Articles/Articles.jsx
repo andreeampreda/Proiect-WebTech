@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Articles.css";
 import CardArticle from "../CardArticle/CardArticle";
+import Button from "@mui/material/Button";
 
 function Articles() {
   const USER_URL = "http://localhost:8080/user"
   const SERVER_URL = "http://localhost:8080/article";
+  
+  const navigate = useNavigate();
 
   const CONFERENCES_URL = "http://localhost:8080/conference";
 
@@ -24,8 +28,6 @@ function Articles() {
     const confId = e.target.value;
     setSelectedConference(confId);
     setConferenceId(confId); 
-
-
   };
 
   useEffect(() => {
@@ -143,7 +145,26 @@ function Articles() {
       <div className="article-title">
         <span> {articleSpan} </span>
         {userRole === "author" && (
-          <button className="btn add-btn">Add Article</button>
+          <Button
+          variant="contained" 
+          color="primary"
+          size="small"
+          sx={{
+            height: "30px", 
+            margin: "30px 10px",           
+            fontWeight: "bold",        
+            fontSize: "12px",          
+            padding: "10px 10px",        
+            backgroundColor: "#e3f2fd", 
+            color: "#0d47a1",         
+            "&:hover": {
+              backgroundColor: "#bbdefb" 
+            }
+          }}
+        // onClick={handleButtonClick} 
+        >
+          Add New Article
+        </Button>
         )}
         {userRole === "organizer" && (
           <div className="conference-title">
@@ -170,18 +191,20 @@ function Articles() {
               key={article.id}
               onContextMenu={(event) => handleContextMenu(event, article.id)}
               className="article-item"
+              onClick={() => navigate(`/home/articles/${article.id}`)}
             >
             <CardArticle
                 id={article.id}
                 title={article.title}
-                author={authorName? authorName : article.authorName}
+                author={authorName ? authorName : article.authorName}
                 description={article.description}
                 status={article.status}
+
               />
             </div>
           ))
         ) : (
-          <p>No articles available for this conference.</p>
+          <p>No articles available for the moment.</p>
         )}
         </div>
       </div>

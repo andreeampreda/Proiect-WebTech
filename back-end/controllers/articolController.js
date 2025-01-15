@@ -42,6 +42,22 @@ const searchByAuthor=async(req,res)=>{
     }
 }
 
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params; 
+
+        const identifiedArt = await articleService.getById(id);
+
+        if (identifiedArt) { 
+            res.send({ article: identifiedArt }); 
+        } else {    
+            res.status(404).send({ message: "Article not found :(" });            
+        }
+    } catch (error) {
+        res.status(500).send({ message: "Error fetching article by ID", error: error.message });
+    }
+};
+
 const createArticle=(req,res)=>{
     try{
         const {title,description, content, conferenceId,authorId,status,version}=req.body;
@@ -98,6 +114,7 @@ const deleteArticle = async (req, res) => {
 
 export {
     getArticles,
+    getById,
     searchByConference,
     searchByAuthor,
     createArticle,

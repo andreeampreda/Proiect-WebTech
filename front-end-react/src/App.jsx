@@ -7,6 +7,7 @@ import Authors from "./components/Authors/Authors";
 import Layout from "./pages/Layout/Layout";
 import Home from "./components/HomeContainer/Home";
 import Articles from "./components/Articles/Articles";
+import ArticleContent from "./components/ArticleContent/ArticleContent";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="creators" element={<Authors />} />
           <Route path="articles" element={<Articles />} />
+          <Route path="articles/:id" element={<ArticleContent />} />
         </Route>
       </Routes>
     </Router>
