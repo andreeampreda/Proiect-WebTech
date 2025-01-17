@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Articles.css";
 import CardArticle from "../CardArticle/CardArticle";
 import Button from "@mui/material/Button";
+import AddArticle from "../AddArticle/AddArticle";
 
 function Articles() {
   const USER_URL = "http://localhost:8080/user"
@@ -23,6 +24,18 @@ function Articles() {
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, articleId: null });
 
   const [selectedConference, setSelectedConference] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => { setIsModalOpen(true);};
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);  
+    
+    window.location.reload();
+  
+  };
+
 
   const handleConferenceChange = (e) => {
     const confId = e.target.value;
@@ -161,7 +174,7 @@ function Articles() {
               backgroundColor: "#bbdefb" 
             }
           }}
-        // onClick={handleButtonClick} 
+          onClick={handleOpenModal} 
         >
           Add New Article
         </Button>
@@ -208,6 +221,12 @@ function Articles() {
         )}
         </div>
       </div>
+
+      {isModalOpen && (
+        <AddArticle open={isModalOpen} onClose={handleCloseModal} 
+                    authorId={localStorage.getItem("userId")}
+        />
+      )}
 
       {contextMenu.visible && (
         <div

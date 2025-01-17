@@ -15,7 +15,8 @@ function ArticleContent() {
       fetch(`${ARTICLE_URL}/${id}`)
         .then((response) => response.json())
         .then((data) => {
-          setArticle(data.article[0]); 
+          console.log(data);
+          setArticle(data.article); 
           setLoading(false);
         })
         .catch((error) => {
@@ -58,9 +59,9 @@ function ArticleContent() {
         alignItems="center"
         height="100vh"
       >
-        <Typography variant="h5" color="error">
-          Article not found!
-        </Typography>
+      <Typography variant="h5" color="error">
+        Article not found!
+      </Typography>
       </Box>
     );
   }

@@ -6,10 +6,6 @@ function CardArticle({ id, title, description, author}) {
   const imageUrl = "/images/cards";
 
   const number = Math.floor(Math.random() * 9) + 1;
-  // const handleArticleClick = (articleId) => {
-  //   navigate(`/home/articles/${articleId}`);
-  // };
-
   return (
     <div className="article-card">
       <div className="article-image">
