@@ -1,0 +1,22 @@
+span{
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.conferencePage{
+    display: flex;
+    flex-direction: column;
+}
+
+.title{
+    margin:30px;
+    text-align: center;
+}
+
+.conferenceContainer{
+    background-color: rgb(97, 52, 132,0.4);
+    margin: 20px;
+    border-radius: 10px;
+}
+
+

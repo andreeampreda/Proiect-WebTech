@@ -1,11 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./CardArticle.css";
 
-function CardArticle({ title, description, author }) {
+function CardArticle({ id, title, description, author}) {
   const imageUrl = "/images/cards";
 
   const number = Math.floor(Math.random() * 9) + 1;
-
   return (
     <div className="article-card">
       <div className="article-image">
