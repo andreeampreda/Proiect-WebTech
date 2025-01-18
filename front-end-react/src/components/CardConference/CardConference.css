@@ -1,0 +1,89 @@
+.conference-card{
+    cursor:pointer;
+    margin: 20px;
+    background-color: rgb(244, 238, 243);
+    border-left: 20px solid rgb(149, 71, 149);
+    border-radius: 5px;
+    width: 1400px;
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+}
+
+.conference-card:hover {
+    transform: scale(1.02); /*ție la hover pentru a încuraja interacțiunea */
+}
+
+.date-info{
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 20px; 
+    gap: 10px;
+}
+
+.date-info .day{
+    font-size: 60px;
+    height: 60px;
+    
+}
+
+.date-info .month{
+    margin: 0;
+    padding-bottom:10px;
+    font-size: 20px;
+}
+
+.name-location{
+    background-color:#f6eded;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 1100px;
+    height: auto;
+    padding-left: 10px;
+}
+
+.name-location #name{
+    font-size: 40px;
+}
+
+.name-location #location{
+    font-size: 20px;
+    font-weight: 150;
+}
+
+.see-info{
+    width:200px;
+    height: auto;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    margin:10px;
+}
+
+.see-info button{
+    width: 150px;
+    height: 40px;
+    color: white;
+    font-size: 16px; 
+    padding: 7px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.see-info .joinBtn {
+    background-color: rgb(149, 71, 149); 
+}
+
+.see-info .joinBtn:hover {
+    background-color: rgb(118, 57, 118);
+    transform: scale(1.05); 
+}
