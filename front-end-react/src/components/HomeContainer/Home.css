@@ -14,6 +14,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    
 }
 
 .home-img {
@@ -26,7 +27,16 @@
 .conferences-container {
     background-color: #eca1a1;
     width: 990px;
-    height: 500px;
+    min-height: 100px;
     border: 20px rgb(218, 137, 23);
     border-radius: 30px;
+    overflow: visible;
+    padding: 20px; /* Adaugă spațiu interior */
+    box-sizing: border-box;
+}
+
+.notify-list {
+    display: flex;
+    flex-direction: column; /* Aranjează cardurile pe verticală */
+    gap: 20px; /* Spațiu între carduri */
 }
