@@ -28,7 +28,7 @@ function NavHome() {
               </Link>
             </li>
             <li>
-              <Link to="authors" className="navhome-links">
+              <Link to="conferences" className="navhome-links">
                 Conferences
               </Link>
             </li>
