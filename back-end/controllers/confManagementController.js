@@ -1,4 +1,5 @@
 import * as confManagementService from "../services/confManagementServices.js";
+import Conference from "../models/conferenceModel.js";
   
   const create = async (req, res) => {
     try {
@@ -34,6 +35,26 @@ import * as confManagementService from "../services/confManagementServices.js";
     }
   };
   
+  const getConferencesByAuthorId = async (req, res) => {
+    try {
+      console.log("Request params:", req.params); 
+  
+      const { authorId } = req.params;
+      console.log("Author ID:", authorId);
+  
+      if (!authorId) {
+        return res.status(400).json({ error: "Author ID is required" });
+      }
+  
+      const conferences = await confManagementService.getConferencesByAuthorId(authorId);
+      res.status(200).json(conferences);
+    } catch (error) {
+      console.error("Error fetching conferences:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+
   const update = async (req, res) => {
     try {
       const { id } = req.params;
@@ -65,5 +86,5 @@ import * as confManagementService from "../services/confManagementServices.js";
         }
     };
   
-  export { create, getAll, getById, update, remove, getStatus };
+  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId };
   
