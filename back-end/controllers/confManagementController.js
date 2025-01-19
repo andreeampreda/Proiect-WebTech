@@ -1,5 +1,6 @@
 import * as confManagementService from "../services/confManagementServices.js";
-  
+import User from '../models/userModel.js';
+
   const create = async (req, res) => {
     try {
         const { confId, authorId, status } = req.body; 
@@ -64,6 +65,42 @@ import * as confManagementService from "../services/confManagementServices.js";
         res.status(400).json({ error: error.message });
         }
     };
+
+    const fetchPendingAuthors = async (req, res) => {
+      try {
+        const { conferenceId } = req.params;
+        if (!conferenceId) {
+          return res.status(400).json({ error: "Conference ID is required" });
+        }
+    
+        const pendingAuthors = await confManagementService.getPendingAuthorsByConference(conferenceId);
+    
+        res.status(200).json(pendingAuthors);
+      } catch (error) {
+        console.error("Error fetching pending authors:", error.message);
+        res.status(500).json({ message: "Error fetching pending authors", error: error.message });
+      }
+    };
+    
+    //
+    const getConferencesByAuthorId = async (req, res) => {
+      try {
+        console.log("Request params:", req.params); 
+    
+        const { authorId } = req.params;
+        console.log("Author ID:", authorId);
+    
+        if (!authorId) {
+          return res.status(400).json({ error: "Author ID is required" });
+        }
+    
+        const conferences = await confManagementService.getConferencesByAuthorId(authorId);
+        res.status(200).json(conferences);
+      } catch (error) {
+        console.error("Error fetching conferences:", error);
+        res.status(500).json({ error: error.message });
+      }
+    };
   
-  export { create, getAll, getById, update, remove, getStatus };
+  export { create, getAll, getById, update, remove, getStatus, fetchPendingAuthors };
   

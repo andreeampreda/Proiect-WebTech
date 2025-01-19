@@ -2,6 +2,7 @@ import React from "react";
 import "./CardNotify.css";
 
 function CardNotify({ title, description,}) {
+  console.log("CardNotify props:", { title, description });
   
 
   return (
