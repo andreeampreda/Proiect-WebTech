@@ -21,31 +21,37 @@ const createConfManagement = async ({confId, authorId, status}) => {
 };
 
 const getConferencesByAuthorId = async (authorId) => {
-  console.log("Fetching conferences by authorId:", authorId);
-  console.log(Conference.associations);
-  console.log(confManagement.associations);
-
   try {
-    
-    const entries = await confManagement.findAll({
-      where: { authorId, status: "approved" },
-      include: [{ model: Conference, attributes: ["id", "name"] }],
+
+    const confManagementEntries = await confManagement.findAll({
+      where: { authorId },
+      attributes: ['confId'], 
     });
 
-    if (!entries || entries.length === 0) {
-      return [];
+    if (!confManagementEntries || confManagementEntries.length === 0) {
+      return []; 
     }
-    console.log("Entries:", entries);
-    return entries.map((entry) => ({
-      conferenceId: entry.Conference.id,
-      conferenceName: entry.Conference.name,
-    }));
+
+    const confIds = confManagementEntries.map((entry) => entry.confId);
+
+    console.log('Found confIds:', confIds);
+
+    const conferences = await Promise.all(
+      confIds.map((confId) =>
+        Conference.findByPk(confId, {
+          attributes: ['id', 'name'], 
+        })
+      )
+    );
+
+    console.log('Fetched conferences:', conferences);
+
+    return conferences.filter((conference) => conference !== null);
   } catch (error) {
-    console.error("Error fetching conferences by authorId:", error);
-    throw new Error("Failed to fetch conferences.");
+    console.error('Error fetching conferences by authorId:', error);
+    throw new Error('Failed to fetch conferences.');
   }
 };
-
 
 
 const getAllConfManagements = async () => {
