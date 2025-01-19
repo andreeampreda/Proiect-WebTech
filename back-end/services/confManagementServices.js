@@ -1,4 +1,5 @@
 import confManagement from "../models/confManagement.js";
+import Conference from "../models/conferenceModel.js";
 
 const createConfManagement = async ({confId, authorId, status}) => {
     try {
@@ -18,6 +19,33 @@ const createConfManagement = async ({confId, authorId, status}) => {
         throw new Error(`Error creating conference: ${error.message}`);
       }
 };
+
+const getConferencesByAuthorId = async (authorId) => {
+  console.log("Fetching conferences by authorId:", authorId);
+  console.log(Conference.associations);
+  console.log(confManagement.associations);
+
+  try {
+    
+    const entries = await confManagement.findAll({
+      where: { authorId, status: "approved" },
+      include: [{ model: Conference, attributes: ["id", "name"] }],
+    });
+
+    if (!entries || entries.length === 0) {
+      return [];
+    }
+    console.log("Entries:", entries);
+    return entries.map((entry) => ({
+      conferenceId: entry.Conference.id,
+      conferenceName: entry.Conference.name,
+    }));
+  } catch (error) {
+    console.error("Error fetching conferences by authorId:", error);
+    throw new Error("Failed to fetch conferences.");
+  }
+};
+
 
 
 const getAllConfManagements = async () => {
@@ -84,5 +112,6 @@ export {
   getConfManagementById,
   updateConfManagement,
   deleteConfManagement,
-  getStatusByAuthorId 
+  getStatusByAuthorId,
+  getConferencesByAuthorId
 };
