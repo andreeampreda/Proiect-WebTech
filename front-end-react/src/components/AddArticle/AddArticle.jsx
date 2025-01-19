@@ -1,4 +1,4 @@
-import React, { useState, version } from "react";
+import React, { useState, version, useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 
 function AddArticle({ open, onClose, authorId, conferences }) {
@@ -6,6 +6,52 @@ function AddArticle({ open, onClose, authorId, conferences }) {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [selectedConference, setSelectedConference] = useState("");
+  const [availableConferences, setAvailableConferences] = useState([]); // Redenumit din `conferences`
+
+  useEffect(() => {
+    const fetchConferences = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/confManagement/conferences/${authorId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setAvailableConferences(data); 
+        } else {
+          console.error("Failed to fetch conferences:", response.statusText);
+          alert("Failed to fetch conferences. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error fetching conferences:", error);
+        alert("An error occurred while fetching conferences.");
+      }
+    };
+
+    if (authorId) {
+      fetchConferences();
+    }
+  }, [authorId]);
+  // useEffect(() => {
+  //   const fetchConferences = async () => {
+  //     try {
+  //       const response = await fetch(`http://localhost:8080/confManagement/status/${authorId}`);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         // Filtrare doar conferințele cu status "approved"
+  //         const approvedConferences = data.filter((conf) => conf.status === "approved");
+  //         setConferences(approvedConferences);
+  //       } else {
+  //         console.error("Failed to fetch conferences:", response.statusText);
+  //         alert("Failed to fetch conferences. Please try again.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching conferences:", error);
+  //       alert("An error occurred while fetching conferences.");
+  //     }
+  //   };
+
+  //   if (authorId) {
+  //     fetchConferences();
+  //   }
+  // }, [authorId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

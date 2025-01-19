@@ -21,14 +21,14 @@ Article.hasMany(Review, { foreignKey: 'articleId' });
 Review.belongsTo(Article, { foreignKey: 'articleId' });
 
 Conference.hasMany(confManagement, { foreignKey: 'confId' });
-confManagement.belongsTo(Conference, { foreignKey: 'id' });
+confManagement.belongsTo(Conference, { foreignKey: 'confId' });
 
 User.hasMany(confManagement, { foreignKey: 'authorId' });
 confManagement.belongsTo(User, { foreignKey: 'authorId' });
 
 const syncDatabase = async () => {
     try {
-        await db.sync({ alter: true }); 
+        await db.sync({ force: true }); 
         console.log("Database synchronized!");
     } catch (error) {
         console.error("Error syncing database:", error);

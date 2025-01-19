@@ -1,6 +1,8 @@
 import confManagement from "../models/confManagement.js";
 import User from '../models/userModel.js'; 
 import { Op } from "sequelize";
+import Conference from "../models/conferenceModel.js";
+
 
 const createConfManagement = async ({confId, authorId, status}) => {
     try {
@@ -19,6 +21,39 @@ const createConfManagement = async ({confId, authorId, status}) => {
       } catch (error) {
         throw new Error(`Error creating conference: ${error.message}`);
       }
+};
+
+const getConferencesByAuthorId = async (authorId) => {
+  try {
+
+    const confManagementEntries = await confManagement.findAll({
+      where: { authorId },
+      attributes: ['confId'], 
+    });
+
+    if (!confManagementEntries || confManagementEntries.length === 0) {
+      return []; 
+    }
+
+    const confIds = confManagementEntries.map((entry) => entry.confId);
+
+    console.log('Found confIds:', confIds);
+
+    const conferences = await Promise.all(
+      confIds.map((confId) =>
+        Conference.findByPk(confId, {
+          attributes: ['id', 'name'], 
+        })
+      )
+    );
+
+    console.log('Fetched conferences:', conferences);
+
+    return conferences.filter((conference) => conference !== null);
+  } catch (error) {
+    console.error('Error fetching conferences by authorId:', error);
+    throw new Error('Failed to fetch conferences.');
+  }
 };
 
 
@@ -146,4 +181,5 @@ export {
   deleteConfManagement,
   getStatusByAuthorId ,
   getPendingAuthorsByConference,
+  getConferencesByAuthorId
 };
