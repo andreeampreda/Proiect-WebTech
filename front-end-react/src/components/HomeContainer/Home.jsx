@@ -10,7 +10,8 @@ function Home() {
 
   const CONFERENCES_URL = "http://localhost:8080/conference/organizer";
   const SERVER_URL = "http://localhost:8080/article";
-  const ORGANIZER_AUTHORS_URL = "http://localhost:8080/conference/organizer-authors";
+  const ORGANIZER_AUTHORS_URL =
+    "http://localhost:8080/conference/organizer-authors";
 
   const [conferences, setConferences] = useState([]);
   const [latestReviews, setLatestReviews] = useState([]);
@@ -24,9 +25,6 @@ function Home() {
     "Feeling creative?",
   ];
 
-
-
-  
   const handleOpenModal = (articleId) => {
     console.log("Opening modal for article ID:", articleId); // Log pentru verificare
     setSelectedArticleId(articleId); // Setează ID-ul articolului selectat
@@ -43,13 +41,16 @@ function Home() {
     try {
       console.log("Sending request:", { authorId, conferenceId, status });
 
-      const response = await fetch("http://localhost:8080/confManagement/update-status", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ authorId, conferenceId, status }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/confManagement/update-status",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ authorId, conferenceId, status }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update status.");
@@ -63,9 +64,6 @@ function Home() {
       console.error(`Error updating status to '${status}':`, error);
     }
   };
-  
-  
-
 
   const fetchReviewsByAuthor = async () => {
     const authorId = localStorage.getItem("userId");
@@ -120,34 +118,28 @@ function Home() {
       fetch(`${CONFERENCES_URL}/${organizerId}`)
         .then((response) => response.json())
         .then((data) => setConferences(data.conferences || []))
-        .catch((error) =>
-          console.error("Error fetching conferences:", error)
-        );
+        .catch((error) => console.error("Error fetching conferences:", error));
       fetchPendingAuthors();
     }
   }, [role]);
-
 
   useEffect(() => {
     if (role === "organizer") {
       const interval = setInterval(() => {
         console.log("Fetching pending authors...");
         fetchPendingAuthors();
-      }, 30); // 300000ms = 5 minute
-  
-      return () => clearInterval(interval); // Curăță intervalul la demontarea componentei
+      }, 60000); // 300000ms = 5 minute
+
+      // Curata intervalul la demontare
+      return () => clearInterval(interval);
     }
   }, [role]);
-  
 
   useEffect(() => {
-  
-   if (role === "author") {
+    if (role === "author") {
       fetchReviewsByAuthor();
     }
   }, [role, conferences]);
-
-  
 
   const i = Math.floor(Math.random() * welcomeTexts.length);
 
@@ -175,18 +167,20 @@ function Home() {
             ) : null}
 
             {role === "organizer" && pendingAuthors.length > 0 ? (
-             pendingAuthors.map((item, index) => (
-              <CardNotify
-                key={`pending-author-${index}`}
-                title={`Conference: ${item.conference.name}`}
-                description={`Author: ${item.author.firstName} ${item.author.lastName}`}
-                role={role}
-                onAccept={() => updateStatus(item.author.id, item.conference.id, "approved")}
-                onReject={() => updateStatus(item.author.id, item.conference.id, "rejected")}
-              />
-            
-            ))
-            
+              pendingAuthors.map((item, index) => (
+                <CardNotify
+                  key={`pending-author-${index}`}
+                  title={`Conference: ${item.conference.name}`}
+                  description={`Author: ${item.author.firstName} ${item.author.lastName}`}
+                  role={role}
+                  onAccept={() =>
+                    updateStatus(item.author.id, item.conference.id, "approved")
+                  }
+                  onReject={() =>
+                    updateStatus(item.author.id, item.conference.id, "rejected")
+                  }
+                />
+              ))
             ) : role === "organizer" ? (
               <p>No pending authors found for conferences.</p>
             ) : null}
