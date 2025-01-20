@@ -21,10 +21,10 @@ function Articles() {
   const [conferenceId, setConferenceId] = useState("");
   const [authorName, setAuthorName] = useState("");
 
-  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, articleId: null });
-
   const [selectedConference, setSelectedConference] = useState(null);
+  const [selectedArticleId, setSelectedArticleId] = useState(null);
 
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, articleId: null });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => { setIsModalOpen(true);};
@@ -36,7 +36,6 @@ function Articles() {
   
   };
 
-
   const handleConferenceChange = (e) => {
     const confId = e.target.value;
     setSelectedConference(confId);
@@ -45,7 +44,7 @@ function Articles() {
 
   useEffect(() => {
     if (conferenceId) {
-      setArticles([]); // Resetează articolele imediat ce conferința se schimbă
+      setArticles([]); 
       fetch(`${SERVER_URL}/search/conference/${conferenceId}`)
         .then((response) => {
           if (!response.ok) {
@@ -73,8 +72,6 @@ function Articles() {
         });
     }
 
-
-    
   }, [selectedConference]);
 
   useEffect(() => {
@@ -148,6 +145,11 @@ function Articles() {
       })
       .catch((error) => console.error("Error deleting article:", error));
   };
+
+  const handleUpdateArticle = (articleId) => {
+    setSelectedArticleId(articleId); 
+    handleOpenModal();
+  }
 
   const handleCloseContextMenu = () => {
     setContextMenu({ visible: false, x: 0, y: 0, articleId: null });
@@ -225,6 +227,7 @@ function Articles() {
       {isModalOpen && (
         <AddArticle open={isModalOpen} onClose={handleCloseModal} 
                     authorId={localStorage.getItem("userId")}
+                    articleId={selectedArticleId? selectedArticleId : 0}
         />
       )}
 
@@ -237,6 +240,9 @@ function Articles() {
             className="delete-btn"
           >
             Delete Article
+          </button>
+          <button onClick={() => handleUpdateArticle(contextMenu.articleId)}>
+            Update Article
           </button>
           <button onClick={handleCloseContextMenu} className="close-btn">
             Cancel

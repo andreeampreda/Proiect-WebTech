@@ -1,12 +1,29 @@
-import React, { useState, version, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 
-function AddArticle({ open, onClose, authorId, conferences }) {
+function AddArticle({ open, onClose, authorId, articleId = 0}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [selectedConference, setSelectedConference] = useState("");
-  const [availableConferences, setAvailableConferences] = useState([]); // Redenumit din `conferences`
+  const [availableConferences, setAvailableConferences] = useState([]); 
+  const [version, setVersion] = useState(1);
+
+  useEffect(() => {
+
+    if (articleId !== 0) {
+      fetch(`http://localhost:8080/article/${articleId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setTitle(data.article.title); 
+          setDescription(data.article.description);
+          setContent(data.article.content );
+          setSelectedConference(data.article.conferenceId);
+          setVersion(data.article.version + 1);
+        })
+        .catch((error) => console.error("Error fetching article:", error));
+    }
+  }, [articleId]);
 
   useEffect(() => {
     const fetchConferences = async () => {
@@ -29,39 +46,54 @@ function AddArticle({ open, onClose, authorId, conferences }) {
       fetchConferences();
     }
   }, [authorId]);
-  // useEffect(() => {
-  //   const fetchConferences = async () => {
-  //     try {
-  //       const response = await fetch(`http://localhost:8080/confManagement/status/${authorId}`);
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         // Filtrare doar conferințele cu status "approved"
-  //         const approvedConferences = data.filter((conf) => conf.status === "approved");
-  //         setConferences(approvedConferences);
-  //       } else {
-  //         console.error("Failed to fetch conferences:", response.statusText);
-  //         alert("Failed to fetch conferences. Please try again.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching conferences:", error);
-  //       alert("An error occurred while fetching conferences.");
-  //     }
-  //   };
-
-  //   if (authorId) {
-  //     fetchConferences();
-  //   }
-  // }, [authorId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newArticle = {
+    if(articleId !== 0){
+      const articleData = {
+        title,
+        description,
+        content,
+        version
+      };
+
+      const response = await fetch(`http://localhost:8080/article/${articleId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(articleData),
+      });
+
+      const contentType = response.headers.get("content-type");
+
+      if (response.ok) {
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          console.log("Article updated:", data);
+          alert("Article updated successfully!");
+        } else {
+          const text = await response.text();
+          console.log("Article updated (non-JSON response):", text);
+          alert(text);
+        }
+        onClose();
+      } else {
+        console.error("Failed to update article:", response.statusText);
+        const errorText = await response.text();
+        alert(`Failed to update article: ${errorText}`);
+      }
+
+    } else {
+      let reviewers = '';
+
+      const newArticle = {
       title,
       description,
       content,
-      conferenceId: 1,
-      authorId: authorId,
+      conferenceId: selectedConference,
+      authorId: parseInt(authorId),
       version: 1,
       status: "pending"
     };
@@ -75,19 +107,94 @@ function AddArticle({ open, onClose, authorId, conferences }) {
         body: JSON.stringify(newArticle),
       });
 
+      console.log("New article:", newArticle);
+      const contentType = response.headers.get("content-type");
+
       if (response.ok) {
-        const data = await response.json();
-        console.log("Article added:", data);
-        alert("Article added successfully!");
+
+        // handle the response from database
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          console.log("Article added:", data);
+         
+        } else {
+          const text = await response.text(); 
+          console.log("Article added (non-JSON response):", text);
+          alert(text); 
+        }
+
+        // fetching all the reviewrs assigned for the chosen conference 
+        // in order to random assign two for feedback
+
+        //fetch reviewers
+        const reviewersResponse = await fetch(`http://localhost:8080/confManagement/reviewer/${selectedConference}`);
+        if (reviewersResponse.ok) {
+            reviewers = await reviewersResponse.json();
+        } else {
+          console.error(
+            "Failed to fetch reviewers:",
+            reviewersResponse.statusText
+          );
+          alert("Article added, but failed to fetch reviewers.");
+        }
+        console.log("Reviewers fetched:", reviewers);
+
+        // choose them randomly
+        let chosenReviewers = [];
+        if (reviewers.length >= 2) {
+          const shuffled = reviewers.sort(() => 0.5 - Math.random()); 
+          chosenReviewers = shuffled.slice(0, 2); 
+        }else {
+          chosenReviewers = reviewers;
+        }
+        console.log("Chosen reviewers:", chosenReviewers);
+
+        //create review entries with reviewerId and articleId
+        for (const reviewer of chosenReviewers) {
+          const reviewData = {
+            articleId: newArticleId,
+            reviewerId: reviewer.authorId,
+            comment: "", 
+            status: "approved",
+          };
+          console.log("Review data:", reviewData);
+
+          try {
+            const reviewResponse = await fetch("http://localhost:8080/review",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(reviewData),
+              }
+            );
+
+            if (reviewResponse.ok) {
+              const review = await reviewResponse.json();
+              console.log("Review created:", review);
+            } else {
+              console.error(
+                "Failed to create review:",
+                reviewResponse.statusText
+              );
+            }
+          } catch (error) {
+            console.error("Error creating review:", error);
+          }
+        }
+
         onClose();
       } else {
         console.error("Failed to add article:", response.statusText);
-        alert("Failed to add article. Please try again.");
+        const errorText = await response.text();
+        alert(`Failed to add article: ${errorText}`);
       }
     } catch (error) {
       console.error("Error adding article:", error);
       alert("An error occurred. Please try again.");
-    }
+    }}
+    
   };
 
   return (
@@ -148,11 +255,11 @@ function AddArticle({ open, onClose, authorId, conferences }) {
             fullWidth
             required
             margin="normal"
-            value={1}
+            value={selectedConference}  
             onChange={(e) => setSelectedConference(e.target.value)}
           >
-            {conferences?.length > 0 ? (
-              conferences.map((conf) => (
+            {availableConferences?.length > 0 ? (
+              availableConferences.map((conf) => (
                 <MenuItem key={conf.id} value={conf.id}>
                   {conf.name}
                 </MenuItem>

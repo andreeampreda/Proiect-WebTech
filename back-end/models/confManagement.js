@@ -6,10 +6,10 @@ const confManagement = db.define('confManagement', {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Conferences', // Numele tabelei asociate
-        key: 'id', // Coloana cheii primare
+        model: 'Conferences',
+        key: 'id',
         },
-        onDelete: 'CASCADE', // Comportamentul la ștergere
+        onDelete: 'CASCADE', 
         onUpdate: 'CASCADE',
     },
     authorId: {
@@ -19,11 +19,11 @@ const confManagement = db.define('confManagement', {
         model: 'Users',
         key: 'id',
     },
-        onDelete: 'CASCADE', // Comportamentul la ștergere
+        onDelete: 'CASCADE', 
         onUpdate: 'CASCADE',
     },
     status: {
-      type: DataTypes.ENUM('approved', 'pending', 'rejected'),
+      type: DataTypes.ENUM('approved', 'pending', 'rejected', 'reviwer'),
       defaultValue: 'pending',
     },
   });

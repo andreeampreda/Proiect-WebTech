@@ -66,7 +66,7 @@ const createArticle=(req,res)=>{
         }
 
         const newArticle=articleService.createArticle({title,description, content, conferenceId,authorId,status,version});
-        res.status(201).send("Articolul s-a creat cu succes!");
+        res.status(201).json(newArticle);
     }catch(error){
         res.status(500).send("Error creating article");
     

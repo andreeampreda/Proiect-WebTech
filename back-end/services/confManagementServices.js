@@ -1,8 +1,5 @@
 import confManagement from "../models/confManagement.js";
-import User from '../models/userModel.js'; 
-import { Op } from "sequelize";
 import Conference from "../models/conferenceModel.js";
-
 
 const createConfManagement = async ({confId, authorId, status}) => {
     try {
@@ -15,12 +12,28 @@ const createConfManagement = async ({confId, authorId, status}) => {
           status
         });
 
-        console.log("New conference created:", newConference);
-
         return newConference;
       } catch (error) {
         throw new Error(`Error creating conference: ${error.message}`);
       }
+};
+
+const getReviewersByConfId = async (confId) => {
+  try {
+    const reviewerEntries = await confManagement.findAll({
+      where: {
+        confId,
+        status: "reviewer",
+      },
+    });
+
+    console.log(`Found reviewers for confId ${confId}:`, reviewerEntries);
+
+    return reviewerEntries;
+  } catch (error) {
+    console.error(`Error fetching reviewers for confId ${confId}:`, error);
+    throw new Error(`Failed to fetch reviewers for confId ${confId}.`);
+  }
 };
 
 const getConferencesByAuthorId = async (authorId) => {
@@ -42,7 +55,7 @@ const getConferencesByAuthorId = async (authorId) => {
     const conferences = await Promise.all(
       confIds.map((confId) =>
         Conference.findByPk(confId, {
-          attributes: ['id', 'name'], 
+          attributes: ['id', 'name', 'location', 'date', 'organizerId'], 
         })
       )
     );
@@ -55,7 +68,6 @@ const getConferencesByAuthorId = async (authorId) => {
     throw new Error('Failed to fetch conferences.');
   }
 };
-
 
 const getAllConfManagements = async () => {
   try {
@@ -115,71 +127,13 @@ const getStatusByAuthorId = async (authorId) => {
     }
 };
 
-const getPendingAuthorsByConference = async (confId) => {
-  try {
-    const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-    // Obține înregistrările confManagement
-    const confManagementEntries = await confManagement.findAll({
-      where: {
-        confId,
-        status: "pending",
-        createdAt: { [Op.gt]: oneDayAgo },
-      },
-      attributes: ["authorId"], // Preia doar authorId
-    });
-
-    if (!confManagementEntries || confManagementEntries.length === 0) {
-      console.log("No pending authors found for conference:", confId);
-      return []; // Dacă nu sunt autori în pending
-    }
-
-    // Extrage authorId din înregistrări
-    const authorIds = confManagementEntries.map((entry) => entry.authorId);
-    console.log("Found authorIds:", authorIds);
-
-    // Găsește autorii după authorId
-    const authors = await Promise.all(
-      authorIds.map(async (authorId) => {
-        const author = await User.findByPk(authorId, {
-          attributes: ["id", "firstName", "lastName"],
-        });
-        if (!author) {
-          console.warn(`Author with id ${authorId} not found.`);
-        }
-        return author;
-      })
-    );
-
-    console.log("Fetched authors:", authors);
-
-    // Filtrează autorii invalizi și creează structura finală
-    const pendingAuthors = authors
-      .filter((author) => author !== null && author !== undefined) // Filtrează valorile invalide
-      .map((author) => ({
-        authorId: author.id,
-        firstName: author.firstName,
-        lastName: author.lastName,
-      }));
-
-    return pendingAuthors;
-  } catch (error) {
-    console.error(`Error fetching pending authors for conference ${confId}:`, error.message);
-    throw new Error(`Error fetching pending authors for conference ${confId}: ${error.message}`);
-  }
-};
-
-
-
-
 export {
   createConfManagement,
   getAllConfManagements,
   getConfManagementById,
   updateConfManagement,
   deleteConfManagement,
-  getStatusByAuthorId ,
-  getPendingAuthorsByConference,
-  getConferencesByAuthorId
+  getStatusByAuthorId,
+  getConferencesByAuthorId, 
+  getReviewersByConfId
 };
