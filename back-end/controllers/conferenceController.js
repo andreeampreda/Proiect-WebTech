@@ -118,6 +118,18 @@ const getConferencesByOrganizer = async (req, res) => {
     }
 };
 
+const getPendingAuthorsByOrganizerId = async (req, res) =>{
+        const { organizerId } = req.params;
+        try {
+            const authors = await confService.getPendingAuthorsByOrganizerId(organizerId);
+            res.json(authors);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+
+}
+
+
 export { 
     getAllConferences,
     search,
@@ -125,5 +137,6 @@ export {
     createConference,
     updateConference, 
     deleteConference,
-    getConferencesByNameHandler
+    getConferencesByNameHandler,
+    getPendingAuthorsByOrganizerId
 };

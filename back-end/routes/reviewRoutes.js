@@ -5,6 +5,7 @@ export const router=express.Router();
 
 router.get('/search',reviewController.search);
 router.get('/:id',reviewController.getReviewsForArticle);
+router.get('/pending/:reviewerId', reviewController.getPendingArticlesByReviewer);
 // get by article status 
 router.post('/', reviewController.createReview);
 router.get('/', reviewController.getAllReviews);
