@@ -33,3 +33,8 @@ span{
     border-radius: 30px;
     padding: 10px;
 }
+
+.conferenceUpper button:hover{
+    background-color: rgb(62, 8, 96);
+    transform: scale(1.01);
+}

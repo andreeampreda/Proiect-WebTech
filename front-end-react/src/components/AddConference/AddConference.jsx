@@ -58,11 +58,12 @@ function AddConference({ onClose, authorId }) {
         <button className="modal-close" onClick={onClose}>
           Close (x)
         </button>
-        <form onSubmit={handleSubmit}>
+        <form className="form-conf" onSubmit={handleSubmit}>
           <h3>Add New Conference</h3>
           <label>
             Name:
             <input
+              className="input-conf"
               type="text"
               name="name"
               value={name}
@@ -73,6 +74,7 @@ function AddConference({ onClose, authorId }) {
           <label>
             Location:
             <input
+              className="input-conf"
               type="text"
               name="location"
               value={location}
@@ -83,6 +85,7 @@ function AddConference({ onClose, authorId }) {
           <label>
             Date:
             <input
+              className="input-conf"
               type="date"
               name="date"
               value={date}
@@ -91,7 +94,9 @@ function AddConference({ onClose, authorId }) {
             />
           </label>
 
-          <button type="submit">Add Conference</button>
+          <button className="submitBtn " type="submit">
+            Add Conference
+          </button>
         </form>
       </div>
     </div>

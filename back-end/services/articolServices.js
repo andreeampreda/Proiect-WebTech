@@ -70,6 +70,11 @@ const updateArticle= async (articleId, updatedData) => {
 }
 
 const deleteArticle= async (articleId) => {
+    //delete the associated reviews first
+    await Review.destroy({
+      where: { articleId }
+    });
+
     const deletedCount = await Article.destroy({
         where: { id: articleId }
     });
