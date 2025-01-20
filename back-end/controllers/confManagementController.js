@@ -1,5 +1,5 @@
 import * as confManagementService from "../services/confManagementServices.js";
-import Conference from "../models/conferenceModel.js";
+import confManagement from "../models/conferenceModel.js";
   
   const create = async (req, res) => {
     try {
@@ -136,7 +136,49 @@ import Conference from "../models/conferenceModel.js";
       }
     };
     
+    const updateStatus = async (req, res) => {
+      const { authorId, conferenceId, status } = req.body;
+    
+      try {
+        // Actualizează statusul
+        const updated = await confManagementService.updateStatus(authorId, conferenceId, status);
+    
+        if (updated[0] === 0) {
+          return res.status(404).json({ error: "No matching entry found." });
+        }
+    
+        // Preia intrarea actualizată
+        const updatedEntry = await confManagement.findOne({
+          where: {
+            authorId,
+            confId: conferenceId,
+          },
+        });
+    
+        return res.json({
+          message: `Status updated to '${status}' successfully.`,
+          updatedEntry,
+        });
+      } catch (error) {
+        console.error("Error updating status:", error.message);
+        if (error.message === "Missing required fields.") {
+          return res.status(400).json({ error: error.message });
+        }
+        return res.status(500).json({ error: "Failed to update status." });
+      }
+    };
+    
+    
   
-  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId ,fetchPendingAuthors, fetchApprovedEntries, getAuthorsByConference };
+  export { create, 
+    getAll, getById, 
+    update, remove, 
+    getStatus, 
+    getConferencesByAuthorId ,
+    fetchPendingAuthors, 
+    fetchApprovedEntries, 
+    getAuthorsByConference,
+    updateStatus
+   };
 
   

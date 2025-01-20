@@ -1,11 +1,23 @@
-import React,{ useState, useEffect } from "react";
+import React from "react";
 import "./CardNotify.css";
-import AddArticle from "../AddArticle/AddArticle";
 
-
-function CardNotify({ title, description,role,onOpenModal}) {
+function CardNotify({ title, description, role, onOpenModal, onAccept, onReject }) {
   console.log("CardNotify props:", { title, description });
-  
+
+  const handleAccept = () => {
+    console.log(`Accept button clicked for: ${description}`);
+    if (onAccept) {
+      onAccept(); // Apelează funcția transmisă pentru Accept
+    }
+  };
+
+  const handleReject = () => {
+    console.log(`Reject button clicked for: ${description}`);
+    if (onReject) {
+      onReject(); // Apelează funcția transmisă pentru Reject
+    }
+  };
+
   const handleUpdate = () => {
     console.log(`Update button clicked for: ${description}`);
     if (onOpenModal) {
@@ -13,13 +25,12 @@ function CardNotify({ title, description,role,onOpenModal}) {
     }
   };
 
-
   return (
     <div className="notify-card">
       <div className="notify-content">
-      <span className="notify-title">
-      {role === "organizer"
-            ? `New article for conference: ${title}`
+        <span className="notify-title">
+          {role === "organizer"
+            ? `New request for conference: ${title}`
             : role === "author"
             ? `New review for article: ${title}`
             : title}
@@ -28,9 +39,21 @@ function CardNotify({ title, description,role,onOpenModal}) {
         {/* Afișare descriere */}
         <p className="notify-description">{description}</p>
 
+        {/* Butoane pentru organizator */}
+        {role === "organizer" && (
+          <div className="notify-buttons">
+            <button className="notify-acceptn button" onClick={onAccept}>
+            <i className="bi bi-check-square"></i>
+            </button>
+            <button className="notify-reject button" onClick={onReject}>
+            <i className="bi bi-x-square"></i>
+            </button>
+          </div>
+        )}
+
         {/* Buton pentru autor */}
         {role === "author" && (
-          <button className="notify-update-button" onClick={handleUpdate}>
+          <button className="notify-update button" onClick={handleUpdate}>
             <i className="bi bi-arrow-up-right-circle"></i>
           </button>
         )}

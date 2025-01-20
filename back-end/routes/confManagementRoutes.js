@@ -12,6 +12,8 @@ router.get("/conferences/:authorId", confManagementController.getConferencesByAu
 router.get("/reviewer/:confId", confManagementController.fetchApprovedEntries);
 router.get("/:confId/authors", confManagementController.getAuthorsByConference);
 
+
+router.put("/update-status", confManagementController.updateStatus);
 router.put("/:id", confManagementController.update); 
 router.delete("/:id", confManagementController.remove); 
 

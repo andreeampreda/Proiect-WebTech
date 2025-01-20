@@ -1,4 +1,7 @@
 import * as reviewService from '../services/reviewServices.js'
+import Review from '../models/reviewModel.js';
+import Article from '../models/articolModel.js';
+
 
 const search= async(req,res)=>{
 
@@ -130,7 +133,28 @@ const deleteReview = async (req, res) => {
     }
 };
 
-
+const getPendingArticlesByReviewer = async (req, res) => {
+    const { reviewerId } = req.params;
+  
+    if (!reviewerId) {
+      return res.status(400).json({ error: "Reviewer ID is required." });
+    }
+  
+    try {
+      const pendingArticles = await reviewService.getPendingArticlesForReviewer(reviewerId);
+  
+      if (pendingArticles.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No pending articles found for this reviewer." });
+      }
+  
+      return res.status(200).json({ articles: pendingArticles });
+    } catch (error) {
+      console.error("Error fetching pending articles:", error);
+      return res.status(500).json({ error: "Failed to fetch pending articles." });
+    }
+  };
 
 export{
     search,
@@ -139,5 +163,9 @@ export{
     getAllReviews, 
     updateReview, 
     deleteReview,
+<<<<<<< HEAD
     getReviewStatus
+=======
+    getPendingArticlesByReviewer
+>>>>>>> d2ae886a3a618566da852e60e66c80ca6221ea92
 };
