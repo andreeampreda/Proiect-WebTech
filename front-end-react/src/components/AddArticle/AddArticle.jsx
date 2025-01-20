@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 
-function AddArticle({ open, onClose, authorId, articleId = 0}) {
+function AddArticle({ open, onClose, authorId, articleId}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");

@@ -1,56 +1,43 @@
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./Home.css";
 import CardNotify from "../CardNotify/CardNotify.jsx";
+import AddArticle from "../AddArticle/AddArticle";
+import { Modal, Box } from "@mui/material";
+
 
 function Home() {
   const username = localStorage.getItem("firstName") || "Guest";
-  const role=localStorage.getItem("role") || "author";
+  const role = localStorage.getItem("role") || "author";
 
   const CONFERENCES_URL = "http://localhost:8080/conference/organizer";
   const SERVER_URL = "http://localhost:8080/article";
-  const CONF_MANG_URL="http://localhost:8080/confManagement/conference";
-  
 
   const [conferences, setConferences] = useState([]);
   const [latestArticles, setLatestArticles] = useState([]);
   const [latestReviews, setLatestReviews] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedArticleId, setSelectedArticleId] = useState(null);
 
-  
+
   const welcomeTexts = [
     "Any big plans for today?",
     "What would you like to do today?",
     "Feeling creative?",
   ];
- 
-  
 
-  const fetchReviewsByAuthor = async () => {
-    const authorId = localStorage.getItem("userId");
-    console.log("Fetching reviews for authorId:", authorId);
-  
-    try {
-      const response = await fetch(`${SERVER_URL}/author/${authorId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch reviews for author");
-      }
-      const data = await response.json();
-      console.log("Full API response:", data);
-  
-      if (Array.isArray(data) && data.length > 0) {
-        // Sortează recenziile descrescător după apariție
-        const sortedReviews = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setLatestReviews(sortedReviews);
-      } else {
-        console.warn("No valid reviews found in response:", data);
-        setLatestReviews([]);
-      }
-    } catch (error) {
-      console.error("Error fetching reviews for author:", error);
-      setLatestReviews([]);
-    }
+  const handleOpenModal = (articleId) => {
+    console.log("Opening modal for article ID:", articleId); // Log pentru verificare
+    setSelectedArticleId(articleId); // Setează ID-ul articolului selectat
+    setIsModalOpen(true); // Deschide modalul
+  };
+
+  const handleCloseModal = () => {
+    console.log("Closing modal");
+    setIsModalOpen(false);
+    setSelectedArticleId(null); // Resetează ID-ul articolului selectat
   };
   
-
+  
   const fetchLatestArticlesAndAuthors = async (conferences) => {
     console.log("Fetching articles and authors for conferences:", conferences);
 
@@ -67,16 +54,44 @@ function Home() {
           authorName: `${article.authorFirstName} ${article.authorLastName}`,
         }));
       } catch (error) {
-        console.error(`Error fetching articles for conference ${conference.id}:`, error);
+        console.error(
+          `Error fetching articles for conference ${conference.id}:`,
+          error
+        );
         return [];
       }
     });
 
     const results = await Promise.all(articlesAndAuthorsPromises);
-    const flattenedResults = results.flat(); // Combină toate articolele într-un singur array
-    setLatestArticles(flattenedResults);
+    setLatestArticles(results.flat());
   };
 
+  const fetchReviewsByAuthor = async () => {
+    const authorId = localStorage.getItem("userId");
+    console.log("Fetching reviews for authorId:", authorId);
+
+    try {
+      const response = await fetch(`${SERVER_URL}/author/${authorId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch reviews for author");
+      }
+      const data = await response.json();
+      console.log("Full API response:", data);
+
+      if (Array.isArray(data) && data.length > 0) {
+        const sortedReviews = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setLatestReviews(sortedReviews);
+      } else {
+        console.warn("No valid reviews found in response:", data);
+        setLatestReviews([]);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews for author:", error);
+      setLatestReviews([]);
+    }
+  };
 
   useEffect(() => {
     if (role === "organizer") {
@@ -108,34 +123,47 @@ function Home() {
         <img className="home-img" src="/images/home-image3.png" alt="home" />
         <div className="conferences-container">
           <h1>Notification</h1>
-            <div className="notify-list">
-            {role === "author" && latestReviews.length > 0 ? (
-              latestReviews.map((review) => (
-                <CardNotify
-                  key={`review-${review.reviewId}`}
-                  title={`${review.articleTitle}`}
-                  description={`Comment: ${review.comment}`}
-                  role={role}
-                />
-              ))
-            ) : role === "author" ? (
-              <p>No reviews found for this author.</p>
-            ) : null}
+          <div className="notify-list">
+          <div className="notify-list">
+  {role === "author" && latestReviews.length > 0 ? (
+    latestReviews.map((review) => (
+      <CardNotify
+        key={`review-${review.reviewId}`}
+        title={`${review.articleTitle}`}
+        description={`Comment: ${review.comment}`}
+        role={role}
+        onOpenModal={() => handleOpenModal(review.articleId)} // Transmite funcția și id-ul articolului
+      />
+    ))
+  ) : role === "author" ? (
+    <p>No reviews found for this author.</p>
+  ) : null}
 
-            {role === "organizer" && latestArticles.length > 0 ? (
-              latestArticles.map((item, index) => (
-                <CardNotify
-                  key={`article-${index}`}
-                  title={` ${item.conferenceName}`}
-                  description={`Article: ${item.articleTitle} by ${item.authorName}`}
-                  role={role}
-                />
-              ))
-            ) : role === "organizer" ? (
-              <p>No articles found for conferences.</p>
-            ) : null}
+  {role === "organizer" && latestArticles.length > 0 ? (
+    latestArticles.map((item, index) => (
+      <CardNotify
+        key={`article-${index}`}
+        title={`Conference: ${item.conferenceName}`}
+        description={`Article: ${item.articleTitle} by ${item.authorName}`}
+        role={role}
+      />
+    ))
+  ) : role === "organizer" ? (
+    <p>No articles found for conferences.</p>
+  ) : null}
 
-            </div>
+  {/* Randarea modalului în afara buclei map */}
+  {isModalOpen && (
+    <AddArticle
+      open={isModalOpen}
+      onClose={handleCloseModal}
+      authorId={localStorage.getItem("userId")}
+      articleId={selectedArticleId}
+    />
+  )}
+</div>
+
+          </div>
         </div>
       </div>
     </div>
