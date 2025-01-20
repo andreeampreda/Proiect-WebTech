@@ -42,6 +42,24 @@ const searchByAuthor=async(req,res)=>{
     }
 }
 
+const getArticlesByReviewer=async(req,res)=>{
+    try{
+        const reviewerId = req.params.reviewerId;
+        console.log('Looking for articles for reviewer:', reviewerId);
+    
+        const articles=await articleService.getArticlesByReviewer(reviewerId);
+        if (articles.length === 0) {
+            return res.status(404).json({ message: "No articles found for this reviewer." });
+          }
+      
+          return res.status(200).json(articles);
+    }catch(error){
+        console.error("Error fetching articles by reviewer:", error);
+        return res.status(500).json({ error: "Failed to fetch articles." });
+      
+    }
+}
+
 const getById = async (req, res) => {
     try {
         const { id } = req.params; 
@@ -145,5 +163,6 @@ export {
     createArticle,
     updateArticle,
     deleteArticle,
-    getAuthorReviews
+    getAuthorReviews,
+    getArticlesByReviewer
 };
