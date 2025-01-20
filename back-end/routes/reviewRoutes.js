@@ -5,9 +5,9 @@ export const router=express.Router();
 
 router.get('/search',reviewController.search);
 router.get('/:id',reviewController.getReviewsForArticle);
-// get by article status 
 router.post('/', reviewController.createReview);
 router.get('/', reviewController.getAllReviews);
+router.get('/status/:reviewId',reviewController.getReviewStatus);
 
 router.put('/:id', reviewController.updateReview);
 router.delete('/:id', reviewController.deleteReview);

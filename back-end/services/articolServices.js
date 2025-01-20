@@ -1,8 +1,6 @@
 import Article from "../models/articolModel.js";
 import Review from "../models/reviewModel.js";
 
-
-
 const getArticles= async()=>{
     return await Article.findAll();
 };
@@ -81,40 +79,58 @@ const deleteArticle= async (articleId) => {
     return deletedCount > 0;
 }
 
+const getArticlesByReviewer=async(reviewerId)=>{
+
+  const reviews=await Review.findAll({
+    where: { reviewerId },
+    attributes: ['articleId'], 
+});
+
+const articleIds = reviews.map(review => review.dataValues.articleId);
+console.log("articolele sunt:",articleIds)
+
+const articles = await Article.findAll({
+  where: {
+    id: articleIds,
+  }
+});
+
+return articles;
+
+}
+
 const getReviewsByAuthorId = async (authorId) => {
     try {
-      // Găsește toate articolele scrise de autor
+      // search all the articles written by author
       const articles = await Article.findAll({
         where: { authorId },
-        attributes: ['id', 'title'], // Preia `id` și `title`
+        attributes: ['id', 'title'], 
       });
   
       if (!articles || articles.length === 0) {
         console.log(`No articles found for author with id ${authorId}`);
-        return []; // Dacă autorul nu are articole
+        return []; //when the author doesn't have any articles
       }
   
-      // Extrage `articleId` din articolele găsite
+      // extract all article ids
       const articleIds = articles.map((article) => article.id);
       console.log(`Articles written by author ${authorId}:`, articleIds);
   
-      // Găsește toate recenziile asociate articolelor găsite
+      // extract all reviews
       const reviews = await Review.findAll({
         where: { articleId: articleIds },
-        attributes: ['id', 'articleId', 'reviewerId', 'comment', 'status'], // Doar coloane valide
+        attributes: ['id', 'articleId', 'reviewerId', 'comment', 'status'],
       });
   
       if (!reviews || reviews.length === 0) {
         console.log(`No reviews found for articles by author ${authorId}`);
-        return []; // Dacă nu există recenzii pentru articolele autorului
+        return [];
       }
   
       console.log(`Found reviews for articles by author ${authorId}:`, reviews);
   
-      // Adaugă detalii despre recenzori și articole
       const reviewsWithDetails = await Promise.all(
         reviews.map(async (review) => {
-          // Găsește detalii despre articol
           const article = articles.find((art) => art.id === review.articleId);
   
           return {
@@ -152,5 +168,6 @@ export {
     createArticle, 
     updateArticle,
     deleteArticle,
-    getReviewsByAuthorId
+    getReviewsByAuthorId,
+    getArticlesByReviewer
 };

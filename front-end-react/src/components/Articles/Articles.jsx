@@ -8,6 +8,7 @@ import AddArticle from "../AddArticle/AddArticle";
 function Articles() {
   const USER_URL = "http://localhost:8080/user";
   const SERVER_URL = "http://localhost:8080/article";
+  const REVIEW_URL = "http://localhost:8080/article/reviewer/";
 
   const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ function Articles() {
   const [conferences, setConferences] = useState([]);
   const [conferenceId, setConferenceId] = useState("");
   const [authorName, setAuthorName] = useState("");
+  const [authId, setAuthId] = useState("");
 
   const [selectedConference, setSelectedConference] = useState(null);
   const [selectedArticleId, setSelectedArticleId] = useState(null);
@@ -105,6 +107,7 @@ function Articles() {
     // if the user is an organizer, fetch the authors
     if (role === "author") {
       const authorId = localStorage.getItem("userId");
+
       if (authorId !== null) {
         fetch(`${SERVER_URL}/search/author/${authorId}`)
           .then((response) => response.json())
@@ -129,7 +132,17 @@ function Articles() {
     //if the user is a reviewer, fetch all the articles that are assigned
     if (role === "reviewer") {
       const reviewerId = localStorage.getItem("userId");
+      console.log(reviewerId);
       if (reviewerId !== null) {
+        fetch(`${REVIEW_URL}${reviewerId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            setArticles(data);
+            setAuthId(data.authorId);
+          })
+          .catch((error) =>
+            console.error("Error fetching articles for the reviewer:", error)
+          );
       }
     } else {
       console.error("Reviewer Id is missing in the localStorage");

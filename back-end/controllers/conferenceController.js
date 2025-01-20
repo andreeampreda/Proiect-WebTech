@@ -59,7 +59,7 @@ const getConferencesByReviewer=async(req,res)=>{
         const { reviewerId } = req.params; 
         console.log('Looking for conferences for reviewer:', reviewerId);
     
-        const conferences = await confService.getConferencesByReviewer(7);
+        const conferences = await confService.getConferencesByReviewer(reviewerId);
     
         console.log(conferences);
         if (conferences.length === 0) {

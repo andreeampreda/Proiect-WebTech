@@ -47,6 +47,18 @@ const getAllReviews = async()=>{
     return await Review.findAll();
 };
 
+const getReviewStatus=async(reviewId)=>{
+
+    const review = await Review.findOne({
+        where: { id: reviewId }, 
+        attributes: ['status'], 
+      });
+
+    if (review) {
+        return review.status;
+    }
+    return null;
+}
 
   
 
@@ -58,5 +70,5 @@ export{
     search,
     createReview, 
     getAllReviews,
- 
+    getReviewStatus
 };

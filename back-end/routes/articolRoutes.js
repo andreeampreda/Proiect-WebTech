@@ -6,6 +6,7 @@ export const router=express.Router();
 router.get("/",artController.getArticles);
 router.get("/:id", artController.getById);
 router.get('/search/conference/:conferenceId', artController.searchByConference);
+router.get('/reviewer/:reviewerId',artController.getArticlesByReviewer);
 router.get('/search/author/:authorId', artController.searchByAuthor);
 router.post("/",artController.createArticle);
 router.get('/author/:authorId', artController.getAuthorReviews);
