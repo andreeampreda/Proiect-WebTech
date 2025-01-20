@@ -58,20 +58,31 @@ const getById = async (req, res) => {
     }
 };
 
-const createArticle=(req,res)=>{
-    try{
-        const {title,description, content, conferenceId,authorId,status,version}=req.body;
-        if(!title || !conferenceId || !authorId){
-            return res.status(400).send(" Titlul, conferinta si autorul sunt necesare!");
-        }
+const createArticle = async (req, res) => {
+    try {
+      const { title, description, content, conferenceId, authorId, status, version } = req.body;
 
-        const newArticle=articleService.createArticle({title,description, content, conferenceId,authorId,status,version});
-        res.status(201).json(newArticle);
-    }catch(error){
-        res.status(500).send("Error creating article");
-    
+      if (!title || !conferenceId || !authorId) {
+        return res.status(400).send("Titlul, conferința și autorul sunt necesare!");
+      }
+
+      const newArticle = await articleService.createArticle({
+        title,
+        description,
+        content,
+        conferenceId,
+        authorId,
+        status,
+        version,
+      });
+      
+      res.status(201).json(newArticle);
+    } catch (error) {
+      console.error("Error creating article:", error.message);
+      res.status(500).send("Error creating article");
     }
-};
+  };
+  
 
 const updateArticle = async (req, res) => {
     try {
@@ -99,7 +110,7 @@ const deleteArticle = async (req, res) => {
         if (!id) {
             return res.status(400).send({ message: "ID-ul articolului este necesar" });
         }
-  
+
         const isDeleted = await articleService.deleteArticle(id);
       
         if (isDeleted) {
