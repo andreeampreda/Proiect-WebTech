@@ -39,6 +39,7 @@ const createArticle= async({title,description,content, conferenceId,authorId,sta
             status,
             version
         });
+        console.log("New article created:", newArticle);
         return newArticle;
     }catch(error){
         throw new Error(error.message);
@@ -46,7 +47,17 @@ const createArticle= async({title,description,content, conferenceId,authorId,sta
 }
 
 const updateArticle= async (articleId, updatedData) => {
-    const updatedArticle = await Article.update(updatedData, {
+
+    // find current article in order to increment its version 
+    const article = await Article.findByPk(articleId);
+
+    if (!article) {
+      throw new Error(`Article with ID ${articleId} not found.`);
+    }
+
+    const incrementedVersion = article.version + 1;
+
+    const updatedArticle = await Article.update({...updatedData, version: incrementedVersion}, {
         where: { id: articleId },
         returning: true,
         plain: true
