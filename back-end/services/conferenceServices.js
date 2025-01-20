@@ -1,4 +1,6 @@
 import Conference from "../models/conferenceModel.js";
+import Article from "../models/articolModel.js";
+import Review from "../models/reviewModel.js";
 import { Op } from 'sequelize';
 
 const getConferences= async()=>{
@@ -27,6 +29,54 @@ const getConferencesByOrganizerId = async (organizerId) => {
             organizerId: organizerId
         }
     });
+};
+
+const getConferencesByReviewer = async (reviewerId) => {
+   
+    const articles=await Review.findAll({
+        where: { reviewerId },
+        attributes: ['articleId'], 
+    });
+
+    let conferencesIds=[];
+
+    console.log("articole:",articles);
+    for(let article of articles){
+
+        console.log(article.dataValues.articleId);
+
+        const articleId=article.dataValues.articleId;
+
+        const articleData = await Article.findOne({
+            where: { id: articleId }, 
+            attributes: ['conferenceId'],
+        });
+        
+        if (articleData) {
+            conferencesIds.push(articleData.conferenceId); 
+        }     
+    }
+
+    const uniqueIds = conferencesIds.filter((value, index, self) => self.indexOf(value) === index);
+
+    console.log(conferencesIds);
+
+    let conferences=[];
+
+    console.log("id uri:",conferencesIds);
+
+    for(let conferenceId of uniqueIds){
+        const conferenceData=await Conference.findOne({
+            where: { id: conferenceId }, 
+        })
+
+        console.log("conferinta:",conferenceData);
+        if(conferenceData){
+            conferences.push(conferenceData);
+        }
+    }
+
+    return conferences;
 };
 
 const getConferencesByName= async (confName) => {
@@ -75,5 +125,6 @@ export {
     updateConference,
     deleteConference,
     getConferencesByOrganizerId,
-    getConferencesByName
+    getConferencesByName,
+    getConferencesByReviewer
 };

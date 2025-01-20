@@ -54,6 +54,25 @@ const createConference= async(req,res)=>{
     }
 };
 
+const getConferencesByReviewer=async(req,res)=>{
+    try {
+        const { reviewerId } = req.params; 
+        console.log('Looking for conferences for reviewer:', reviewerId);
+    
+        const conferences = await confService.getConferencesByReviewer(7);
+    
+        console.log(conferences);
+        if (conferences.length === 0) {
+          return res.status(404).json({ message: "No conferences found for this reviewer." });
+        }
+    
+        return res.status(200).json(conferences);
+      } catch (error) {
+        console.error("Error fetching conferences by reviewer:", error);
+        return res.status(500).json({ error: "Failed to fetch conferences." });
+      }
+};
+
 const updateConference = async (req, res) => {
     try {
         const { id } = req.params;
@@ -125,5 +144,6 @@ export {
     createConference,
     updateConference, 
     deleteConference,
-    getConferencesByNameHandler
+    getConferencesByNameHandler,
+    getConferencesByReviewer
 };

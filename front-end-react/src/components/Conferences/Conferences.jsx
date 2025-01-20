@@ -10,7 +10,9 @@ import AddConference from "../AddConference/AddConference";
 function Conferences() {
   const conferenceSpan = "View:";
   const SERVER_URL = "http://localhost:8080/conference";
-  const CONFERENCE_URL = `http://localhost:8080/confManagement/conferences/`;
+  const CONFERENCE_URL = `http://localhost:8080/conference/organizer/`;
+  const AUTHOR_URL = `http://localhost:8080/confManagement/conferences/`;
+  const REVIEWER_URL = `http://localhost:8080/conference/reviewer/`;
 
   const [conferences, setConferences] = useState([]);
   const [userConferences, setUserConferences] = useState([]);
@@ -27,21 +29,58 @@ function Conferences() {
     setIsModalOpen(false);
   };
 
-  const fetchAllConferences = () => {
-    fetch(`${SERVER_URL}`)
-      .then((response) => response.json())
-      .then((data) => setConferences(data.conferences))
-      .catch((error) => {
-        console.log("Couldn't fetch conferences");
-      });
+  const fetchAllConferences = async () => {
+    if (userRole === "reviewer") {
+      console.log("pt ca e reviwer");
+      const userId = localStorage.userId;
+
+      const response = await fetch(`${REVIEWER_URL}${userId}`);
+      if (!response.ok) {
+        throw new Error(
+          `Error: ${response.status} - Unable to fetch conferences`
+        );
+      }
+      const data = await response.json();
+      console.log(data);
+
+      setConferences(data);
+
+      // await fetch(`${REVIEWER_URL}${userId}`)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     console.log(data);
+      //     setConferences(data);
+      //   })
+      //   .catch((error) => {
+      //     console.log("Couldn't fetch conferences");
+      //   });
+    } else if (userRole === "author" || userRole === "organizer") {
+      try {
+        const response = await fetch(`${SERVER_URL}`);
+        if (!response.ok) {
+          throw new Error(
+            `Error: ${response.status} - Unable to fetch conferences`
+          );
+        }
+
+        const data = await response.json();
+        setConferences(data.conferences);
+      } catch (error) {
+        console.log("Couldn't fetch conferences", error);
+      }
+    }
   };
 
   useEffect(() => {
     const role = localStorage.getItem("role");
     setUserRole(role);
 
-    fetchAllConferences();
-  }, []);
+    console.log("useEffect", role);
+
+    if (userRole) {
+      fetchAllConferences();
+    }
+  }, [userRole]);
 
   const handleOptionChange = (e) => {
     const userId = localStorage.userId;
@@ -53,13 +92,24 @@ function Conferences() {
     } else if (selectedOption === "user") {
       setConferences([]);
 
-      fetch(`${CONFERENCE_URL}${userId}`)
-        .then((response) => response.json())
-        .then((data) => setUserConferences(data)) ///!!!!!!!
-        .catch((error) => {
-          console.log("Couldn't fetch conferences");
-        });
-      console.log("doar ale mele");
+      if (userRole === "organizer") {
+        fetch(`${CONFERENCE_URL}${userId}`)
+          .then((response) => response.json())
+          .then((data) => setConferences(data.conferences))
+          .catch((error) => {
+            console.log("Couldn't fetch conferences");
+          });
+      }
+
+      if (userRole === "author") {
+        fetch(`${AUTHOR_URL}${userId}`)
+          .then((response) => response.json())
+          .then((data) => setConferences(data)) ///!!!!!!!
+          .catch((error) => {
+            console.log("Couldn't fetch conferences");
+          });
+        console.log("autori autori");
+      }
     }
   };
 
@@ -72,17 +122,27 @@ function Conferences() {
 
   const handleCloseContent = () => {
     setIsContentOpen(false);
-    fetchAllConferences();
   };
 
   return (
     <div className="conferencePage">
       <div className="conferenceUpper">
-        <span className="title">{conferenceSpan}</span>
-        <select className="dropDown" onChange={handleOptionChange}>
-          <option value="">All</option>
-          <option value="user">Only yours</option>
-        </select>
+        {userRole === "reviewer" && (
+          <>
+            <span className="title">Assigned Conferences</span>
+          </>
+        )}
+
+        {userRole === "organizer" ||
+          (userRole === "author" && (
+            <>
+              <span className="title">{conferenceSpan}</span>
+              <select className="dropDown" onChange={handleOptionChange}>
+                <option value="">All</option>
+                <option value="user">Only yours</option>
+              </select>
+            </>
+          ))}
         {userRole === "organizer" && (
           <button onClick={handleOpenModal}>Add new Conference</button>
         )}
