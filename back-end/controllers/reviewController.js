@@ -163,9 +163,6 @@ export{
     getAllReviews, 
     updateReview, 
     deleteReview,
-<<<<<<< HEAD
-    getReviewStatus
-=======
-    getPendingArticlesByReviewer
->>>>>>> d2ae886a3a618566da852e60e66c80ca6221ea92
+    getReviewStatus,
+    getPendingArticlesByReviewer,
 };

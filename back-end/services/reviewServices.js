@@ -50,7 +50,7 @@ const getAllReviews = async()=>{
     return await Review.findAll();
 };
 
-<<<<<<< HEAD
+
 const getReviewStatus=async(reviewId)=>{
 
     const review = await Review.findOne({
@@ -64,7 +64,6 @@ const getReviewStatus=async(reviewId)=>{
     return null;
 }
 
-=======
 const getPendingArticlesForReviewer = async (reviewerId) => {
     try {
       const reviews = await Review.findAll({
@@ -92,10 +91,6 @@ const getPendingArticlesForReviewer = async (reviewerId) => {
       throw new Error("Failed to fetch pending articles.");
     }
   };
->>>>>>> d2ae886a3a618566da852e60e66c80ca6221ea92
-  
-
-  
 export{
     getReviewsForArticle,
     updateReview,
@@ -103,10 +98,7 @@ export{
     search,
     createReview, 
     getAllReviews,
-<<<<<<< HEAD
-    getReviewStatus
-=======
+    getReviewStatus,
     getPendingArticlesForReviewer,
  
->>>>>>> d2ae886a3a618566da852e60e66c80ca6221ea92
 };
