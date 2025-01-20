@@ -134,7 +134,7 @@ const getAuthorsByConferenceId = async (confId) => {
     // Găsește toate intrările din confManagement pentru conferința specificată
     const confManagementEntries = await confManagement.findAll({
       where: { confId },
-      attributes: ['authorId'], // Preia doar `authorId`
+      attributes: ['authorId', 'status'],
     });
 
     if (!confManagementEntries || confManagementEntries.length === 0) {
@@ -166,6 +166,26 @@ const getAuthorsByConferenceId = async (confId) => {
   }
 };
 
+const updateStatus = async (authorId, conferenceId, status) => {
+  if (!authorId || !conferenceId || !status) {
+    throw new Error("Missing required fields.");
+  }
+
+  const updated = await confManagement.update(
+    { status },
+    {
+      where: {
+        authorId,
+        confId: conferenceId,
+      },
+    }
+  );
+
+  return updated;
+};
+
+
+
 
 export {
   createConfManagement,
@@ -177,4 +197,5 @@ export {
   getConferencesByAuthorId, 
   getReviewersByConfId,
   getAuthorsByConferenceId,
+  updateStatus
 };
