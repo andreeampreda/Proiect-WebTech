@@ -47,11 +47,16 @@ const getAllReviews = async()=>{
     return await Review.findAll();
 };
 
+
+  
+
+  
 export{
     getReviewsForArticle,
     updateReview,
     deleteReview,
     search,
     createReview, 
-    getAllReviews
+    getAllReviews,
+ 
 };

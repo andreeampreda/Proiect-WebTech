@@ -97,6 +97,25 @@ import Conference from "../models/conferenceModel.js";
         res.status(400).json({ error: error.message });
         }
     };
+
+
+    const fetchPendingAuthors = async (req, res) => {
+      try {
+        const { conferenceId } = req.params;
+        if (!conferenceId) {
+          return res.status(400).json({ error: "Conference ID is required" });
+        }
+    
+        const pendingAuthors = await confManagementService.getPendingAuthorsByConference(conferenceId);
+    
+        res.status(200).json(pendingAuthors);
+      } catch (error) {
+        console.error("Error fetching pending authors:", error.message);
+        res.status(500).json({ message: "Error fetching pending authors", error: error.message });
+      }
+    };
+    
   
-  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId, fetchApprovedEntries };
+  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId ,fetchPendingAuthors, fetchApprovedEntries };
+
   
