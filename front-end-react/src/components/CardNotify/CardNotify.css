@@ -34,3 +34,22 @@
     line-height: 1.4;
   }
   
+  .notify-update-button {
+    background-color: transparent; /* Fără fundal */
+    border: none; /* Fără margini */
+    color:  rgb(218, 137, 23); /* Portocaliu aprins */
+    font-size: 24px; /* Dimensiune text/icon */
+    cursor: pointer; /* Schimbă cursorul la hover */
+    transition: color 0.3s ease; /* Animație pentru schimbarea culorii */
+  }
+  
+  .notify-update-button:hover {
+    color: #FF6347; /* Culoare portocaliu mai deschis la hover */
+    transform: scale(1.1); /* Mărește puțin butonul */
+  }
+  
+  .notify-update-button:focus {
+    outline: none; /* Elimină conturul focus */
+  
+  }
+  

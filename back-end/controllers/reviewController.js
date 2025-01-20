@@ -16,8 +16,11 @@ const search= async(req,res)=>{
 };
 
 const getReviewsForArticle=async(req,res)=>{
+    console.log(req.params);
     try{
-        const reviewIdentified=await reviewService.getReviewsForArticle(req.params.id)
+        const {id} = req.params;
+        console.log("id", id);
+        const reviewIdentified=await reviewService.getReviewsForArticle(id)
         if (reviewIdentified) {
             res.send({ review: reviewIdentified});
         } else {
@@ -90,6 +93,8 @@ const deleteReview = async (req, res) => {
         res.status(500).send({ message: "Eroare la ștergerea review-ului", error: error.message });
     }
 };
+
+
 
 export{
     search,

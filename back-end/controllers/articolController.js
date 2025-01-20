@@ -112,6 +112,20 @@ const deleteArticle = async (req, res) => {
     }
 };
 
+const getAuthorReviews = async (req, res) => {
+    const { authorId } = req.params;
+    console.log('controller: ',authorId);
+    try {
+      const reviews = await articleService.getReviewsByAuthorId(authorId);
+      res.status(200).json(reviews);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+
+  
+
 export {
     getArticles,
     getById,
@@ -119,5 +133,6 @@ export {
     searchByAuthor,
     createArticle,
     updateArticle,
-    deleteArticle
+    deleteArticle,
+    getAuthorReviews
 };
