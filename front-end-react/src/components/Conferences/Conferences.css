@@ -1,5 +1,5 @@
 span{
-    font-size: 30px;
+    font-size: 40px;
     font-weight: 700;
 }
 
@@ -19,4 +19,17 @@ span{
     border-radius: 10px;
 }
 
+.conferenceUpper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
 
+.conferenceUpper button{
+    margin:10px;
+    background-color: rgb(85, 24, 123);
+    color:white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px;
+}

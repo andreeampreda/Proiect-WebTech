@@ -97,6 +97,46 @@ import Conference from "../models/conferenceModel.js";
         res.status(400).json({ error: error.message });
         }
     };
+
+
+    const fetchPendingAuthors = async (req, res) => {
+      try {
+        const { conferenceId } = req.params;
+        if (!conferenceId) {
+          return res.status(400).json({ error: "Conference ID is required" });
+        }
+    
+        const pendingAuthors = await confManagementService.getPendingAuthorsByConference(conferenceId);
+    
+        res.status(200).json(pendingAuthors);
+      } catch (error) {
+        console.error("Error fetching pending authors:", error.message);
+        res.status(500).json({ message: "Error fetching pending authors", error: error.message });
+      }
+    };
+    
+    const getAuthorsByConference = async (req, res) => {
+      try {
+        const { confId } = req.params;
+    
+        if (!confId) {
+          return res.status(400).json({ error: "Conference ID is required" });
+        }
+    
+        const authors = await confManagementService.getAuthorsByConferenceId(confId);
+    
+        if (authors.length === 0) {
+          return res.status(404).json({ message: "No authors found for this conference" });
+        }
+    
+        return res.status(200).json({ authors });
+      } catch (error) {
+        console.error("Error in getAuthorsByConference:", error.message);
+        return res.status(500).json({ error: "Failed to fetch authors for the conference" });
+      }
+    };
+    
   
-  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId, fetchApprovedEntries };
+  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId ,fetchPendingAuthors, fetchApprovedEntries, getAuthorsByConference };
+
   
