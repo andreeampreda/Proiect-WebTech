@@ -6,6 +6,7 @@ function SignUpForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
 
@@ -29,7 +30,7 @@ function SignUpForm() {
       lastName,
       username,
       password,
-      role: "author",
+      role,
     };
 
     try {
@@ -45,7 +46,6 @@ function SignUpForm() {
       if (response.ok) {
         const message = await response.text();
         alert("Sign up successful!");
-        console.log("e bun");
         Navigate("/home");
       } else {
         alert("Sign up failed!");
@@ -93,6 +93,21 @@ function SignUpForm() {
           />
           <i className="bx bx-user"></i>
         </div>
+        <div className="select-role">
+          <select
+            className="select-box"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Choose your role
+            </option>
+            <option value="author">Author</option>
+            <option value="reviewer">Reviewer</option>
+            <option value="organizer">Organizer</option>
+          </select>
+        </div>
         <div className="input-box">
           <input
             type="password"
@@ -118,7 +133,16 @@ function SignUpForm() {
         <button className="btn">Sign Up</button>
         <div className="login-link">
           <p>
-            Already have an account? <a href="#" onClick={() => {Navigate("/login"); window.location.reload(); }}>Login</a>
+            Already have an account?{" "}
+            <a
+              href="#"
+              onClick={() => {
+                Navigate("/login");
+                window.location.reload();
+              }}
+            >
+              Login
+            </a>
           </p>
         </div>
       </form>
