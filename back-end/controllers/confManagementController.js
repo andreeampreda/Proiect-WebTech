@@ -115,7 +115,28 @@ import Conference from "../models/conferenceModel.js";
       }
     };
     
+    const getAuthorsByConference = async (req, res) => {
+      try {
+        const { confId } = req.params;
+    
+        if (!confId) {
+          return res.status(400).json({ error: "Conference ID is required" });
+        }
+    
+        const authors = await confManagementService.getAuthorsByConferenceId(confId);
+    
+        if (authors.length === 0) {
+          return res.status(404).json({ message: "No authors found for this conference" });
+        }
+    
+        return res.status(200).json({ authors });
+      } catch (error) {
+        console.error("Error in getAuthorsByConference:", error.message);
+        return res.status(500).json({ error: "Failed to fetch authors for the conference" });
+      }
+    };
+    
   
-  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId ,fetchPendingAuthors, fetchApprovedEntries };
+  export { create, getAll, getById, update, remove, getStatus, getConferencesByAuthorId ,fetchPendingAuthors, fetchApprovedEntries, getAuthorsByConference };
 
   

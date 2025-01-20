@@ -1,13 +1,17 @@
-import React from "react";
+import React,{ useState, useEffect } from "react";
 import "./CardNotify.css";
+import AddArticle from "../AddArticle/AddArticle";
 
 
-function CardNotify({ title, description,role}) {
+function CardNotify({ title, description,role,onOpenModal}) {
   console.log("CardNotify props:", { title, description });
   
   const handleUpdate = () => {
     console.log(`Update button clicked for: ${description}`);
-  }
+    if (onOpenModal) {
+      onOpenModal(); // Apelează funcția transmisă din `Home`
+    }
+  };
 
 
   return (
@@ -15,9 +19,9 @@ function CardNotify({ title, description,role}) {
       <div className="notify-content">
       <span className="notify-title">
       {role === "organizer"
-            ? `New Article for conference: ${title}`
+            ? `New article for conference: ${title}`
             : role === "author"
-            ? `New Review for article: ${title}`
+            ? `New review for article: ${title}`
             : title}
         </span>
 

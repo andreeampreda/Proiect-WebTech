@@ -1,5 +1,7 @@
 import confManagement from "../models/confManagement.js";
 import Conference from "../models/conferenceModel.js";
+import User from "../models/userModel.js";
+
 
 const createConfManagement = async ({confId, authorId, status}) => {
     try {
@@ -127,6 +129,44 @@ const getStatusByAuthorId = async (authorId) => {
     }
 };
 
+const getAuthorsByConferenceId = async (confId) => {
+  try {
+    // Găsește toate intrările din confManagement pentru conferința specificată
+    const confManagementEntries = await confManagement.findAll({
+      where: { confId },
+      attributes: ['authorId'], // Preia doar `authorId`
+    });
+
+    if (!confManagementEntries || confManagementEntries.length === 0) {
+      console.log(`No authors found for conference with id ${confId}`);
+      return []; // Dacă nu există autori pentru conferință
+    }
+
+    // Extrage ID-urile unice ale autorilor
+    const authorIds = [...new Set(confManagementEntries.map((entry) => entry.authorId))];
+    console.log(`Authors for conference ${confId}:`, authorIds);
+
+    // Găsește detalii despre autori
+    const authors = await Promise.all(
+      authorIds.map((authorId) =>
+        User.findByPk(authorId, {
+          attributes: ['id', 'firstName', 'lastName',], // Adaptează atributele dorite
+        })
+      )
+    );
+
+    // Filtrează valorile null
+    const filteredAuthors = authors.filter((author) => author !== null);
+    console.log(`Final authors for conference ${confId}:`, filteredAuthors);
+
+    return filteredAuthors;
+  } catch (error) {
+    console.error(`Error fetching authors for conference ${confId}:`, error.message);
+    throw new Error(`Error fetching authors for conference ${confId}: ${error.message}`);
+  }
+};
+
+
 export {
   createConfManagement,
   getAllConfManagements,
@@ -135,5 +175,6 @@ export {
   deleteConfManagement,
   getStatusByAuthorId,
   getConferencesByAuthorId, 
-  getReviewersByConfId
+  getReviewersByConfId,
+  getAuthorsByConferenceId,
 };
