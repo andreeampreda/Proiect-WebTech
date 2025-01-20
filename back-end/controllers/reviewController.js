@@ -31,19 +31,39 @@ const getReviewsForArticle=async(req,res)=>{
     }
 };
 
-const createReview = async(req, res)=>{
+const createReview = async (req, res) => {
     try {
-        const {articleId, reviewerId, comment, status} = req.body;
-        if(!articleId || !reviewerId || !comment || !status){
-            return res.status(400).send({message: 'Trebuiesc completate toate campurile!', error: error.message });
-        }
-        
-        const newReview = reviewService.createReview({articleId, reviewerId, comment, status});
-        res.status(201).send("Review-ul s-a creat cu succes!");
+      const { articleId, reviewerId, comment, status } = req.body;
+
+      console.log("Create review request:", articleId, reviewerId, comment, status);
+
+      if (!articleId || !reviewerId || !comment || !status) {
+        return res.status(400).json({
+          message: "Trebuiesc completate toate câmpurile!",
+        });
+      }
+
+      const newReview = await reviewService.createReview({
+        articleId,
+        reviewerId,
+        comment,
+        status,
+      });
+  
+      res.status(201).json({
+        message: "Review-ul s-a creat cu succes!",
+        review: newReview, 
+      });
     } catch (error) {
-        res.status(500).send("Error creating review");
+      console.error("Error creating review:", error.message);
+  
+      res.status(500).json({
+        message: "Eroare la crearea review-ului!",
+        error: error.message,
+      });
     }
-}
+  };
+  
 
 const getAllReviews = async(req, res)=>{
     try {

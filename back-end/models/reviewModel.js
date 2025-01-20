@@ -11,6 +11,7 @@ const Review = db.define('Review', {
     articleId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+         onDelete: "CASCADE",
     },
     reviewerId: {
         type: DataTypes.INTEGER,

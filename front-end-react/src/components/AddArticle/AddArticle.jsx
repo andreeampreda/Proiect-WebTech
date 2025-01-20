@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 
 function AddArticle({ open, onClose, authorId, articleId}) {
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [selectedConference, setSelectedConference] = useState("");
   const [availableConferences, setAvailableConferences] = useState([]); 
   const [version, setVersion] = useState(1);
+
+  const [modalTitle, setModalTitle] = useState("");
 
   useEffect(() => {
 
@@ -20,9 +23,14 @@ function AddArticle({ open, onClose, authorId, articleId}) {
           setContent(data.article.content );
           setSelectedConference(data.article.conferenceId);
           setVersion(data.article.version + 1);
+
+          setModalTitle("Edit Article ");
         })
         .catch((error) => console.error("Error fetching article:", error));
+    } else {
+      setModalTitle("Add New Article");
     }
+
   }, [articleId]);
 
   useEffect(() => {
@@ -112,19 +120,9 @@ function AddArticle({ open, onClose, authorId, articleId}) {
 
       if (response.ok) {
 
-        // handle the response from database
-        if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
-          console.log("Article added:", data);
-         
-        } else {
-          const text = await response.text(); 
-          console.log("Article added (non-JSON response):", text);
-          alert(text); 
-        }
-
-        // fetching all the reviewrs assigned for the chosen conference 
-        // in order to random assign two for feedback
+        const data = await response.json(); 
+        const newArticleId = data.id; 
+        console.log("Article added with ID:", newArticleId);
 
         //fetch reviewers
         const reviewersResponse = await fetch(`http://localhost:8080/confManagement/reviewer/${selectedConference}`);
@@ -154,7 +152,7 @@ function AddArticle({ open, onClose, authorId, articleId}) {
           const reviewData = {
             articleId: newArticleId,
             reviewerId: reviewer.authorId,
-            comment: "", 
+            comment: "   ", 
             status: "approved",
           };
           console.log("Review data:", reviewData);
@@ -170,6 +168,8 @@ function AddArticle({ open, onClose, authorId, articleId}) {
               }
             );
 
+            
+            console.log("Review response status:", reviewResponse.status);
             if (reviewResponse.ok) {
               const review = await reviewResponse.json();
               console.log("Review created:", review);
@@ -218,7 +218,7 @@ function AddArticle({ open, onClose, authorId, articleId}) {
         }}
       >
         <Typography id="add-article-modal-title" variant="h6" gutterBottom>
-          Add New Article
+          {modalTitle}
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
