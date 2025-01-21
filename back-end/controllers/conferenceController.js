@@ -157,9 +157,7 @@ export {
     updateConference, 
     deleteConference,
     getConferencesByNameHandler,
-
     getPendingAuthorsByOrganizerId,
-
-    getConferencesByReviewer
+    getConferencesByReviewer,
 
 };

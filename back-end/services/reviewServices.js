@@ -65,32 +65,61 @@ const getReviewStatus=async(reviewId)=>{
 }
 
 const getPendingArticlesForReviewer = async (reviewerId) => {
-    try {
-      const reviews = await Review.findAll({
-        where: {
-          reviewerId,
-          status: "pending",
-        },
-        include: [
-          {
-            model: Article, 
-            attributes: ["id", "title", "description", "content"], 
-          },
-        ],
-      });
-  
-      return reviews.map((review) => ({
+  try {
+    // Găsește toate recenziile cu status "pending" pentru reviewer
+    const reviewEntries = await Review.findAll({
+      where: { reviewerId, status: "pending" },
+      attributes: ["id", "articleId", "status"], // Atributele necesare din Review
+    });
+
+    if (!reviewEntries || reviewEntries.length === 0) {
+      console.log(`No pending reviews found for reviewer with id ${reviewerId}`);
+      return []; // Dacă nu există recenzii în pending
+    }
+
+    // Extrage ID-urile unice ale articolelor
+    const articleIds = [...new Set(reviewEntries.map((entry) => entry.articleId))];
+    console.log(`Articles for reviewer ${reviewerId}:`, articleIds);
+
+    // Găsește detalii despre articole
+    const articles = await Promise.all(
+      articleIds.map((articleId) =>
+        Article.findByPk(articleId, {
+          attributes: ["id", "title", "description", "content"], // Atributele dorite din Article
+        })
+      )
+    );
+
+    // Filtrează valorile null (articole inexistente)
+    const filteredArticles = articles.filter((article) => article !== null);
+    console.log(`Final articles for reviewer ${reviewerId}:`, filteredArticles);
+
+    // Mapează recenziile la detaliile articolelor
+    const reviewsWithArticles = reviewEntries.map((review) => {
+      const article = filteredArticles.find((art) => art.id === review.articleId);
+      return {
         reviewId: review.id,
         articleId: review.articleId,
-        articleTitle: review.Article?.title,
-        articleDescription: review.Article?.description,
-        articleContent: review.Article?.content,
-      }));
-    } catch (error) {
-      console.error("Error fetching pending articles for reviewer:", error);
-      throw new Error("Failed to fetch pending articles.");
-    }
-  };
+
+        articleTitle: article ? article.title : "Unknown",
+        articleDescription: article ? article.description : "Unknown",
+        articleContent: article ? article.content : "Unknown",
+        status: review.status,
+      };
+    });
+
+    console.log("Mapped reviews with articles:", reviewsWithArticles);
+
+    return reviewsWithArticles;
+  } catch (error) {
+    console.error(`Error fetching pending articles for reviewer ${reviewerId}:`, error.message);
+    throw new Error(`Failed to fetch pending articles for reviewer ${reviewerId}: ${error.message}`);
+  }
+};
+
+  
+
+  
 export{
     getReviewsForArticle,
     updateReview,

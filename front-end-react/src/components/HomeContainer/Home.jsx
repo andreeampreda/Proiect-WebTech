@@ -2,18 +2,16 @@ import React, { useState, useEffect } from "react";
 import "./Home.css";
 import CardNotify from "../CardNotify/CardNotify.jsx";
 import AddArticle from "../AddArticle/AddArticle";
-import { Modal, Box } from "@mui/material";
 
 function Home() {
   const username = localStorage.getItem("firstName") || "Guest";
   const role = localStorage.getItem("role") || "author";
 
   const CONFERENCES_URL = "http://localhost:8080/conference/organizer";
-  const SERVER_URL = "http://localhost:8080/article";
-  const ORGANIZER_AUTHORS_URL =
-    "http://localhost:8080/conference/organizer-authors";
 
-  const [conferences, setConferences] = useState([]);
+  const ORGANIZER_AUTHORS_URL = "http://localhost:8080/conference/organizer-authors";
+
+
   const [latestReviews, setLatestReviews] = useState([]);
   const [pendingAuthors, setPendingAuthors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,16 +23,49 @@ function Home() {
     "Feeling creative?",
   ];
 
+
+  const fetchPendingArticlesForReviewer = async () => {
+    const reviewerId = localStorage.getItem("userId");
+  
+    if (!reviewerId) {
+      console.error("Reviewer ID is missing.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8080/review/pending/${reviewerId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch pending articles for reviewer.");
+      }
+  
+      const data = await response.json();
+      console.log("Full API response:", data);
+  
+      // Accesează proprietatea `articles` din răspuns
+      if (data.articles && Array.isArray(data.articles)) {
+        setLatestReviews(data.articles);
+        console.log("Pending articles for reviewer:", data.articles);
+      } else {
+        console.warn("Unexpected response format:", data);
+        setLatestReviews([]); // Resetează lista dacă răspunsul nu este valid
+      }
+    } catch (error) {
+      console.error("Error fetching pending articles for reviewer:", error);
+    }
+  };
+  
+
+
   const handleOpenModal = (articleId) => {
-    console.log("Opening modal for article ID:", articleId); // Log pentru verificare
-    setSelectedArticleId(articleId); // Setează ID-ul articolului selectat
-    setIsModalOpen(true); // Deschide modalul
+    console.log("Opening modal for article ID:", articleId);
+    setSelectedArticleId(articleId);
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     console.log("Closing modal");
     setIsModalOpen(false);
-    setSelectedArticleId(null); // Resetează ID-ul articolului selectat
+    setSelectedArticleId(null);
   };
 
   const updateStatus = async (authorId, conferenceId, status) => {
@@ -65,6 +96,7 @@ function Home() {
     }
   };
 
+
   const fetchReviewsByAuthor = async () => {
     const authorId = localStorage.getItem("userId");
     console.log("Fetching reviews for authorId:", authorId);
@@ -92,6 +124,7 @@ function Home() {
     }
   };
 
+
   const fetchPendingAuthors = async () => {
     const organizerId = localStorage.getItem("userId");
     if (!organizerId) {
@@ -104,6 +137,7 @@ function Home() {
       if (!response.ok) {
         throw new Error("Failed to fetch pending authors.");
       }
+
       const data = await response.json();
       console.log("Pending authors:", data);
       setPendingAuthors(data);
@@ -120,20 +154,11 @@ function Home() {
         .then((data) => setConferences(data.conferences || []))
         .catch((error) => console.error("Error fetching conferences:", error));
       fetchPendingAuthors();
+    } else if (role === "reviewer") {
+      fetchPendingArticlesForReviewer();
     }
   }, [role]);
 
-  useEffect(() => {
-    if (role === "organizer") {
-      const interval = setInterval(() => {
-        console.log("Fetching pending authors...");
-        fetchPendingAuthors();
-      }, 60000); // 300000ms = 5 minute
-
-      // Curata intervalul la demontare
-      return () => clearInterval(interval);
-    }
-  }, [role]);
 
   useEffect(() => {
     if (role === "author") {
@@ -159,7 +184,7 @@ function Home() {
                   title={`${review.articleTitle}`}
                   description={`Comment: ${review.comment}`}
                   role={role}
-                  onOpenModal={() => handleOpenModal(review.articleId)} // Transmite funcția și id-ul articolului
+                  onOpenModal={() => handleOpenModal(review.articleId)}
                 />
               ))
             ) : role === "author" ? (
@@ -173,16 +198,28 @@ function Home() {
                   title={`Conference: ${item.conference.name}`}
                   description={`Author: ${item.author.firstName} ${item.author.lastName}`}
                   role={role}
-                  onAccept={() =>
-                    updateStatus(item.author.id, item.conference.id, "approved")
-                  }
-                  onReject={() =>
-                    updateStatus(item.author.id, item.conference.id, "rejected")
-                  }
+
+                  onAccept={() => updateStatus(item.author.id, item.conference.id, "approved")}
+                  onReject={() => updateStatus(item.author.id, item.conference.id, "rejected")}
+
                 />
               ))
             ) : role === "organizer" ? (
               <p>No pending authors found for conferences.</p>
+            ) : null}
+
+            {role === "reviewer" && latestReviews.length > 0 ? (
+              latestReviews.map((review) => (
+                <CardNotify
+                  key={`review-${review.reviewId}`}
+                  title={`Article: ${review.articleTitle}`}
+                  description={`Description: ${review.articleDescription}`}
+                  role={role}
+                  onOpenModal={() => console.log(`Opening article ${review.articleId}`)}
+                />
+              ))
+            ) : role === "reviewer" ? (
+              <p>No pending articles found for review.</p>
             ) : null}
 
             {isModalOpen && (
