@@ -13,3 +13,8 @@
 .status-text{
     color: rgb(191, 75, 197);
 }
+
+.comment-section{
+    margin-top: 10px;
+    border-top: 2px solid purple;
+}

@@ -9,8 +9,8 @@ function Home() {
 
   const CONFERENCES_URL = "http://localhost:8080/conference/organizer";
 
-  const ORGANIZER_AUTHORS_URL = "http://localhost:8080/conference/organizer-authors";
-
+  const ORGANIZER_AUTHORS_URL =
+    "http://localhost:8080/conference/organizer-authors";
 
   const [latestReviews, setLatestReviews] = useState([]);
   const [pendingAuthors, setPendingAuthors] = useState([]);
@@ -23,24 +23,25 @@ function Home() {
     "Feeling creative?",
   ];
 
-
   const fetchPendingArticlesForReviewer = async () => {
     const reviewerId = localStorage.getItem("userId");
-  
+
     if (!reviewerId) {
       console.error("Reviewer ID is missing.");
       return;
     }
-  
+
     try {
-      const response = await fetch(`http://localhost:8080/review/pending/${reviewerId}`);
+      const response = await fetch(
+        `http://localhost:8080/review/pending/${reviewerId}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch pending articles for reviewer.");
       }
-  
+
       const data = await response.json();
       console.log("Full API response:", data);
-  
+
       // Accesează proprietatea `articles` din răspuns
       if (data.articles && Array.isArray(data.articles)) {
         setLatestReviews(data.articles);
@@ -53,8 +54,6 @@ function Home() {
       console.error("Error fetching pending articles for reviewer:", error);
     }
   };
-  
-
 
   const handleOpenModal = (articleId) => {
     console.log("Opening modal for article ID:", articleId);
@@ -96,7 +95,6 @@ function Home() {
     }
   };
 
-
   const fetchReviewsByAuthor = async () => {
     const authorId = localStorage.getItem("userId");
     console.log("Fetching reviews for authorId:", authorId);
@@ -123,7 +121,6 @@ function Home() {
       setLatestReviews([]);
     }
   };
-
 
   const fetchPendingAuthors = async () => {
     const organizerId = localStorage.getItem("userId");
@@ -159,12 +156,11 @@ function Home() {
     }
   }, [role]);
 
-
   useEffect(() => {
     if (role === "author") {
       fetchReviewsByAuthor();
     }
-  }, [role, conferences]);
+  }, [role]);
 
   const i = Math.floor(Math.random() * welcomeTexts.length);
 
@@ -198,10 +194,12 @@ function Home() {
                   title={`Conference: ${item.conference.name}`}
                   description={`Author: ${item.author.firstName} ${item.author.lastName}`}
                   role={role}
-
-                  onAccept={() => updateStatus(item.author.id, item.conference.id, "approved")}
-                  onReject={() => updateStatus(item.author.id, item.conference.id, "rejected")}
-
+                  onAccept={() =>
+                    updateStatus(item.author.id, item.conference.id, "approved")
+                  }
+                  onReject={() =>
+                    updateStatus(item.author.id, item.conference.id, "rejected")
+                  }
                 />
               ))
             ) : role === "organizer" ? (
@@ -215,7 +213,9 @@ function Home() {
                   title={`Article: ${review.articleTitle}`}
                   description={`Description: ${review.articleDescription}`}
                   role={role}
-                  onOpenModal={() => console.log(`Opening article ${review.articleId}`)}
+                  onOpenModal={() =>
+                    console.log(`Opening article ${review.articleId}`)
+                  }
                 />
               ))
             ) : role === "reviewer" ? (

@@ -10,7 +10,7 @@ import confManagement from "../models/conferenceModel.js";
         }
 
         const newConference = await confManagementService.createConfManagement({ confId, authorId, status });
-        res.status(201).json(newConference.article); 
+        res.status(201).json(newConference); 
       } catch (error) {
         res.status(400).json({ error: error.message });
       }
