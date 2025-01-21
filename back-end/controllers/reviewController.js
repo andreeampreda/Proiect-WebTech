@@ -68,6 +68,22 @@ const createReview = async (req, res) => {
   };
   
 
+const getReviewStatus=async(req,res)=>{
+    try{
+        const {reviewId}=req.params;
+        console.log("!!!!!!!!",reviewId);
+
+        const status=await reviewService.getReviewStatus(reviewId);
+
+        if (!status) {
+            return res.status(404).send({ message: "Review not found" });
+          }
+        res.send({status});
+    }catch(error){
+        res.status(500).send({ message: "Error fetching status", error: error.message });
+    }
+}
+
 const getAllReviews = async(req, res)=>{
     try {
         const reviews = await reviewService.getAllReviews();
@@ -147,5 +163,6 @@ export{
     getAllReviews, 
     updateReview, 
     deleteReview,
-    getPendingArticlesByReviewer
+    getReviewStatus,
+    getPendingArticlesByReviewer,
 };

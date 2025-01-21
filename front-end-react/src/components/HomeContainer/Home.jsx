@@ -8,7 +8,9 @@ function Home() {
   const role = localStorage.getItem("role") || "author";
 
   const CONFERENCES_URL = "http://localhost:8080/conference/organizer";
+
   const ORGANIZER_AUTHORS_URL = "http://localhost:8080/conference/organizer-authors";
+
 
   const [latestReviews, setLatestReviews] = useState([]);
   const [pendingAuthors, setPendingAuthors] = useState([]);
@@ -20,6 +22,7 @@ function Home() {
     "What would you like to do today?",
     "Feeling creative?",
   ];
+
 
   const fetchPendingArticlesForReviewer = async () => {
     const reviewerId = localStorage.getItem("userId");
@@ -52,6 +55,7 @@ function Home() {
   };
   
 
+
   const handleOpenModal = (articleId) => {
     console.log("Opening modal for article ID:", articleId);
     setSelectedArticleId(articleId);
@@ -68,13 +72,16 @@ function Home() {
     try {
       console.log("Sending request:", { authorId, conferenceId, status });
 
-      const response = await fetch("http://localhost:8080/confManagement/update-status", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ authorId, conferenceId, status }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/confManagement/update-status",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ authorId, conferenceId, status }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update status.");
@@ -88,6 +95,35 @@ function Home() {
       console.error(`Error updating status to '${status}':`, error);
     }
   };
+
+
+  const fetchReviewsByAuthor = async () => {
+    const authorId = localStorage.getItem("userId");
+    console.log("Fetching reviews for authorId:", authorId);
+
+    try {
+      const response = await fetch(`${SERVER_URL}/author/${authorId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch reviews for author");
+      }
+      const data = await response.json();
+      console.log("Full API response:", data);
+
+      if (Array.isArray(data) && data.length > 0) {
+        const sortedReviews = data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setLatestReviews(sortedReviews);
+      } else {
+        console.warn("No valid reviews found in response:", data);
+        setLatestReviews([]);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews for author:", error);
+      setLatestReviews([]);
+    }
+  };
+
 
   const fetchPendingAuthors = async () => {
     const organizerId = localStorage.getItem("userId");
@@ -123,6 +159,13 @@ function Home() {
     }
   }, [role]);
 
+
+  useEffect(() => {
+    if (role === "author") {
+      fetchReviewsByAuthor();
+    }
+  }, [role, conferences]);
+
   const i = Math.floor(Math.random() * welcomeTexts.length);
 
   return (
@@ -155,8 +198,10 @@ function Home() {
                   title={`Conference: ${item.conference.name}`}
                   description={`Author: ${item.author.firstName} ${item.author.lastName}`}
                   role={role}
+
                   onAccept={() => updateStatus(item.author.id, item.conference.id, "approved")}
                   onReject={() => updateStatus(item.author.id, item.conference.id, "rejected")}
+
                 />
               ))
             ) : role === "organizer" ? (

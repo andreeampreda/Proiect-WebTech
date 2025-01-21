@@ -50,6 +50,20 @@ const getAllReviews = async()=>{
     return await Review.findAll();
 };
 
+
+const getReviewStatus=async(reviewId)=>{
+
+    const review = await Review.findOne({
+        where: { id: reviewId }, 
+        attributes: ['status'], 
+      });
+
+    if (review) {
+        return review.status;
+    }
+    return null;
+}
+
 const getPendingArticlesForReviewer = async (reviewerId) => {
   try {
     // Găsește toate recenziile cu status "pending" pentru reviewer
@@ -86,6 +100,7 @@ const getPendingArticlesForReviewer = async (reviewerId) => {
       return {
         reviewId: review.id,
         articleId: review.articleId,
+
         articleTitle: article ? article.title : "Unknown",
         articleDescription: article ? article.description : "Unknown",
         articleContent: article ? article.content : "Unknown",
@@ -112,6 +127,7 @@ export{
     search,
     createReview, 
     getAllReviews,
+    getReviewStatus,
     getPendingArticlesForReviewer,
  
 };
