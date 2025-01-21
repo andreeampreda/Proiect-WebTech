@@ -8,10 +8,13 @@ function Home() {
   const role = localStorage.getItem("role") || "author";
 
   const CONFERENCES_URL = "http://localhost:8080/conference/organizer";
-
+  const SERVER_URL = "http://localhost:8080/article";
   const ORGANIZER_AUTHORS_URL =
     "http://localhost:8080/conference/organizer-authors";
 
+
+    
+  const [conferences, setConferences] = useState([]);
   const [latestReviews, setLatestReviews] = useState([]);
   const [pendingAuthors, setPendingAuthors] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
