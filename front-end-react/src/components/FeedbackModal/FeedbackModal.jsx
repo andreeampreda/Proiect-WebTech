@@ -2,17 +2,16 @@ import React from "react";
 import "./FeedbackModal.css";
 import { useState, useEffect } from "react";
 
-function FeedbackModal({ articleId, onClose, reviewerId }) {
+function FeedbackModal({ articleId, onClose, reviewerId, reviewId }) {
   const [status, setStatus] = useState("");
   const [comment, setComment] = useState("");
-  const [userId, setUserId] = useState("");
 
   const ARTICLE_URL = "http://localhost:8080/review/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Review status:", status);
-    console.log(articleId);
+    console.log("MODIFICAM ARTICOLUL", articleId);
     if (status === "pending") {
       console.log("Comentariu:", comment);
     }
@@ -22,8 +21,15 @@ function FeedbackModal({ articleId, onClose, reviewerId }) {
       comment: comment,
     };
 
+    const createData = {
+      status: status,
+      comment: comment,
+      reviewerId: reviewerId,
+      articleId: articleId,
+    };
+
     try {
-      const response = await fetch(`${ARTICLE_URL}${articleId}`, {
+      const response = await fetch(`${ARTICLE_URL}${reviewId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -31,11 +37,30 @@ function FeedbackModal({ articleId, onClose, reviewerId }) {
         body: JSON.stringify(updatedData),
       });
 
+      if (!response.ok) {
+        console.log(
+          "Nu există review pentru acest articol, se va crea unul nou."
+        );
+        response = await fetch(`${ARTICLE_URL}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(createData),
+        });
+      }
+
       if (response.ok) {
-        console.log("Review updated successfully!");
+        console.log("Review-ul a fost salvat/actualizat cu succes!", articleId);
+        const responseData = await response.json();
+        console.log("Comentariul a fost actualizat:", responseData);
+
         onClose();
       } else {
-        console.error("Failed to update review:", response.statusText);
+        console.error(
+          "A apărut o eroare la actualizarea/recrearea review-ului",
+          response.statusText
+        );
       }
     } catch (error) {
       console.error("Error during review update:", error);
@@ -65,8 +90,9 @@ function FeedbackModal({ articleId, onClose, reviewerId }) {
             if (parseInt(review.reviewerId) === parseInt(reviewerId))
               userReview = review;
           }
-          console.log("review ul deci", userReview);
+
           if (userReview) {
+            console.log("asta ne intereseaza", userReview);
             setStatus(userReview.status);
           }
         }

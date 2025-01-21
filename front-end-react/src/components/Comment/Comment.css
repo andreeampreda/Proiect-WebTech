@@ -1,0 +1,19 @@
+.comment-div{
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-text{
+    margin-left: 20px;
+    text-align: left;
+    font-weight: 300;
+    margin-top: 0;
+    padding-top: 0;
+
+}
+
+.reviewer-username{
+    font-weight: 700;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}

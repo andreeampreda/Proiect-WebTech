@@ -3,11 +3,16 @@ import { useParams } from "react-router-dom";
 import { Box, Typography, Paper, CircularProgress } from "@mui/material";
 import "./ArticleContent.css";
 import FeedbackModal from "../FeedbackModal/FeedbackModal";
+import Comment from "../Comment/Comment";
+
+//componenta care ne afiseaza continutul unui articol selectat din lista
 
 function ArticleContent() {
   const ARTICLE_URL = "http://localhost:8080/article";
   const STATUS_URL = "http://localhost:8080/review/status/";
   const USER_URL = "http://localhost:8080/user";
+  const REVIEW_URL = "http://localhost:8080/review/";
+
   const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [authorName, setAuthorName] = useState(null);
@@ -16,27 +21,57 @@ function ArticleContent() {
   const [userId, setUserId] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [status, setStatus] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [reviewId, setReviewId] = useState("");
 
+  // functiile de manipulare a datelor pentru modalul de feedback
+  //se va deschide cand userul apasa pe buton
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    fetch(`${REVIEW_URL}${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setReviews(data.review);
+        console.log("review-urile:!!", reviews);
+      })
+      .catch((error) => {
+        console.error("Error fetching reviews for article", article.id, error);
+        setLoading(false);
+      });
+
+    const filteredReview = reviews.find(
+      (review) => parseInt(review.reviewerId) === parseInt(userId)
+    );
+
+    console.log("reviewerul trb sa fie", userId);
+
+    if (filteredReview) {
+      console.log("Review găsit:", filteredReview.reviewerId);
+      setReviewId(filteredReview.reviewId);
+    } else {
+      console.log("Nu există review pentru acest articol și reviewer.");
+    }
   };
 
+  /// fetch-uim statusul articolului pentru a-l afisa
   useEffect(() => {
     fetch(`${STATUS_URL}${id}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data.status);
         setStatus(data.status);
+        console.log("e id corect?", id);
       })
       .catch((error) => {
         console.error("Error fetching article status:", error);
       });
   }, []);
 
+  ///pentru a afisa continutul articolului e nevoie de o cerere Get
   useEffect(() => {
     if (id) {
       fetch(`${ARTICLE_URL}/${id}`)
@@ -53,12 +88,32 @@ function ArticleContent() {
     }
   }, [id]);
 
+  /// vom afisa si feedback-ul primit aferent fiecarui articol
+  useEffect(() => {
+    fetch(`${REVIEW_URL}${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setReviews(data.review);
+        console.log("review-urile:!!", reviews);
+      })
+      .catch((error) => {
+        console.error("Error fetching reviews for article", article.id, error);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log("Review-uri actualizate:", reviews);
+  }, []);
+
+  // retinem rolul si id-ul utilizatorului
   useEffect(() => {
     setUserRole(localStorage.getItem("role"));
     setUserId(localStorage.getItem("userId"));
     console.log(userRole);
   }, [userRole]);
 
+  ///pentru a afisa numele complet al autorului articolului
   useEffect(() => {
     if (article && article.authorId) {
       fetch(`${USER_URL}/${article.authorId}`)
@@ -125,7 +180,7 @@ function ArticleContent() {
             style={{
               fontWeight: "bold",
               marginBottom: "10px",
-              display: "block", // pentru a-l pune pe o linie separată
+              display: "block",
             }}
           >
             Status:
@@ -156,8 +211,19 @@ function ArticleContent() {
             articleId={article.id}
             onClose={handleCloseModal}
             reviewerId={userId}
+            reviewId={reviewId}
           ></FeedbackModal>
         )}
+        <div className="comment-section">
+          <p comment="">Comments:</p>
+          {reviews.length > 0 ? (
+            reviews.map((review, index) => (
+              <Comment key={index} comment={review.comment} />
+            ))
+          ) : (
+            <p>No comments available</p>
+          )}
+        </div>
       </Paper>
     </Box>
   );

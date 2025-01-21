@@ -10,13 +10,23 @@ const getReviewsForArticle = async (articleId) => {
 
 
 const updateReview= async (reviewId, updatedData) => {
-    const updatedReview = await Review.update(updatedData, {
-        where: { id: reviewId },
-        returning: true,
-        plain: true
+  try {
+    const [updatedRowCount, updatedRows] = await Review.update(updatedData, {
+      where: { id: reviewId },
+      returning: true, 
+      plain: true, 
     });
-    
-    return updatedReview[1]; 
+
+    if (updatedRowCount === 0) {
+      console.log("Nicio recenzie nu a fost găsită sau actualizată.");
+      return null;
+    }
+
+    return updatedRows; 
+  } catch (error) {
+    console.error("Eroare la actualizarea recenziei:", error);
+    return null;
+  } 
 }
 
 const deleteReview= async (reviewId) => {
